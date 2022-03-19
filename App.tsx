@@ -1,7 +1,12 @@
 import { CustomSchemaType } from '@eva-design/dss';
 import * as eva from '@eva-design/eva';
+import {
+  RobotoMono_400Regular,
+  useFonts,
+} from '@expo-google-fonts/roboto-mono';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import AppLoading from 'expo-app-loading';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-gesture-handler';
 import 'react-native-get-random-values';
@@ -23,6 +28,13 @@ const customMapping = mapping as CustomSchemaType;
 
 export default function App() {
   const isDark = useIsDark();
+  const [fontsLoaded] = useFonts({
+    RobotoMono_400Regular,
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
 
   return (
     <Provider store={store}>

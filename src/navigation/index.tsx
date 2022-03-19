@@ -1,36 +1,42 @@
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import {
   DarkTheme,
   DefaultTheme,
   NavigationContainer,
 } from '@react-navigation/native';
-import DrawerContentContainer from '../containers/app/DrawerContentContainer';
-import { DrawerParamList } from '../utils';
-import { useBackgroundColor, useIsDark } from '../utils/hooks';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { RootStackParamList } from '../utils';
+import { useIsDark } from '../utils/hooks';
 import LinkingConfiguration from './LinkingConfiguration';
-import RootStackNavigator from './RootStackNavigator';
+import screens from './screens';
+import TopNavigation from './TopNavigation';
 
-const Drawer = createDrawerNavigator<DrawerParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default () => {
   const isDark = useIsDark();
-  const backgroundColor = useBackgroundColor();
+  const topInsets = useSafeAreaInsets().top;
 
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={isDark ? DarkTheme : DefaultTheme}
     >
-      <Drawer.Navigator
-        drawerContent={(props) => <DrawerContentContainer {...props} />}
+      <Stack.Navigator
         screenOptions={{
+          header: TopNavigation(topInsets),
           headerShown: false,
-          drawerStyle: { backgroundColor },
         }}
-        useLegacyImplementation
       >
-        <Drawer.Screen name="RootStack" component={RootStackNavigator} />
-      </Drawer.Navigator>
+        {screens.map(({ name, screen, options }) => (
+          <Stack.Screen
+            key={name}
+            name={name}
+            component={screen}
+            options={options}
+          />
+        ))}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

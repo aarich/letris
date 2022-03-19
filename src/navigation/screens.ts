@@ -1,6 +1,7 @@
 import { screened } from '../components/base/Screen';
-import HomeScreen from '../screens/HomeScreen';
+import PlayScreen from '../screens/PlayScreen';
 import { ScreenInfo } from '../utils';
+import DrawerNavigator from './DrawerNavigator';
 
 const asScreens = <S extends ScreenInfo>(screens: S[]): S[] =>
   screens.map(
@@ -8,8 +9,8 @@ const asScreens = <S extends ScreenInfo>(screens: S[]): S[] =>
   );
 
 export default asScreens<ScreenInfo>([
-  { name: 'Home', screen: HomeScreen },
-  // { name: 'Play', screen: PlayScreen },
+  { name: 'Home', screen: DrawerNavigator, options: { headerShown: false } },
+  { name: 'Play', screen: PlayScreen, options: { headerShown: false } },
   // { name: 'About', screen: AboutScreen },
   // { name: 'Help', screen: HelpScreen },
   // { name: 'Feedback', screen: FeedbackScreen },

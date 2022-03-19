@@ -1,3 +1,4 @@
+import { DrawerHeaderProps } from '@react-navigation/drawer';
 import { DrawerActions } from '@react-navigation/native';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import {
@@ -10,7 +11,9 @@ import { Fragment, ReactNode } from 'react';
 import { Icon, Text, View } from '../components/base';
 import { Icons } from '../utils';
 
-export default <T extends NativeStackHeaderProps>(topInsets: number) =>
+export default <T extends NativeStackHeaderProps | DrawerHeaderProps>(
+    topInsets: number
+  ) =>
   ({ options, navigation, route, ...others }: T) => {
     if (options.headerShown === false) {
       return undefined;
@@ -25,7 +28,7 @@ export default <T extends NativeStackHeaderProps>(topInsets: number) =>
 
     let canGoBack = false;
 
-    if ('pop' in navigation && 'back' in others && others.back) {
+    if ('pop' in navigation && 'pop' in others) {
       const goBack = () => navigation.pop();
       canGoBack = false;
 

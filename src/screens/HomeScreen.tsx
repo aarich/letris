@@ -5,9 +5,11 @@ import { RootStackScreenProps } from '../utils';
 type Props = RootStackScreenProps<'Home'>;
 
 const HomeScreen = ({ navigation }: Props) => {
+  const onGoToPlay = () => navigation.push('Play');
+  const onToggleDrawer = () => navigation.toggleDrawer();
   return (
-    <Layout flex l2>
-      <HomeContainer />
+    <Layout flex safe>
+      <HomeContainer onGoToPlay={onGoToPlay} onToggleDrawer={onToggleDrawer} />
     </Layout>
   );
 };

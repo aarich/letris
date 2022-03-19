@@ -69,7 +69,7 @@ export const renderGame = (game: GameState) => {
 
   switch (game.incoming.direction) {
     case Direction.RIGHT:
-      ret += game.incoming;
+      ret += game.incoming.chars;
       break;
     case Direction.DOWN:
       ret += game.incoming.chars[0] + '\n' + ret + game.incoming.chars[1];

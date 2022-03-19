@@ -4,10 +4,14 @@ import { setAppSetting } from '../actions';
 
 export type StatsState = {
   [GameStat.GAMES_PLAYED]: number;
+  [GameStat.HIGH_SCORE]: number;
+  [GameStat.HIGH_TURNS]: number;
 };
 
 const initialState: StatsState = {
   [GameStat.GAMES_PLAYED]: 0,
+  [GameStat.HIGH_SCORE]: 0,
+  [GameStat.HIGH_TURNS]: 0,
 };
 
 const StatsReducer = (state = initialState, action: AnyAction): StatsState => {

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Charts",
-    "slug": "lettris",
+    "name": "Letris",
+    "slug": "letris",
     "version": "1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "lettris",
+    "scheme": "letris",
     "userInterfaceStyle": "automatic",
     "backgroundColor": "#222B45",
     "platforms": ["android", "ios", "web"],
@@ -22,17 +22,18 @@
     "ios": {
       "buildNumber": "1",
       "supportsTablet": true,
-      "bundleIdentifier": "com.mrarich.lettris",
+      "bundleIdentifier": "com.mrarich.letris",
       "appStoreUrl": "https://apps.apple.com/app/apple-store/id1612680145?pt=117925864&ct=aj&mt=8",
       "infoPlist": {
         "LSApplicationQueriesSchemes": ["twitter"]
       },
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "bitcode": false
     },
     "android": {
-      "playStoreUrl": "https://play.google.com/store/apps/details?id=rich.alex.lettris",
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=rich.alex.letris",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#222B45"
@@ -42,7 +43,7 @@
         "WRITE_EXTERNAL_STORAGE",
         "QUERY_ALL_PACKAGES"
       ],
-      "package": "rich.alex.charts",
+      "package": "rich.alex.letris",
       "versionCode": 1
     },
     "web": {

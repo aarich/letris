@@ -26,10 +26,7 @@ const elements = [
   [
     { name: 'Expo', url: 'expo.dev' },
     { name: 'React Native', url: 'reactnative.dev' },
-    { name: 'React Query', url: 'react-query.tanstack.com' },
-    { name: 'Supabase', url: 'supabase.com' },
     { name: 'UI Kitten', url: 'akveo.github.io/react-native-ui-kitten' },
-    { name: 'Victory Charts', url: 'formidable.com/open-source/victory/' },
   ].map((link) => (
     <Fragment key={link.name}>{p(a(link.url, link.name))}</Fragment>
   )),

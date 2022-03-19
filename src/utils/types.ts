@@ -27,15 +27,15 @@ export type ScreenInfo = {
 };
 
 export type DrawerParamList = {
-  RootStack: NavigatorScreenParams<RootStackParamList>;
+  HomeScreen: undefined;
 };
 
 export type RootStackParamList = {
+  Home: NavigatorScreenParams<DrawerParamList>;
   About: undefined;
   Help: undefined;
   Feedback: undefined;
   Settings: undefined;
-  Home: undefined;
   Play: undefined;
   Stats: undefined;
 };
@@ -61,6 +61,8 @@ export enum AppSetting {
 
 export enum GameStat {
   GAMES_PLAYED = 'GAMES_PLAYED',
+  HIGH_SCORE = 'HIGH_SCORE',
+  HIGH_TURNS = 'HIGH_TURNS',
 }
 
 export type MyAlertButton = AlertButton & { icon?: IconType };

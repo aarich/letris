@@ -13,6 +13,7 @@ type Props = {
   center?: boolean;
   italic?: boolean;
   flex?: number;
+  mono?: boolean;
 } & TextProps;
 
 const Text = ({
@@ -29,6 +30,7 @@ const Text = ({
   category: passedCategory,
   appearance: passedAppearance,
   flex,
+  mono,
   ...props
 }: Props) => {
   let category: TextProps['category'] = passedCategory || 'p1';
@@ -58,6 +60,12 @@ const Text = ({
   }
   if (flex) {
     style = StyleSheet.flatten([style, { flex }]);
+  }
+  if (mono) {
+    style = StyleSheet.flatten([
+      { fontFamily: 'RobotoMono_400Regular' },
+      style,
+    ]);
   }
 
   return (

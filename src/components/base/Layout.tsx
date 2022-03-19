@@ -1,12 +1,14 @@
 import { Layout as UIKLayout, LayoutProps } from '@ui-kitten/components';
 import { FC } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
   flex?: boolean;
   l2?: boolean;
   l3?: boolean;
   l4?: boolean;
+  safe?: boolean;
 } & LayoutProps;
 
 const Layout: FC<Props> = ({
@@ -17,11 +19,12 @@ const Layout: FC<Props> = ({
   children,
   flex,
   style,
+  safe,
   ...props
 }) => {
   let computedStyle: StyleProp<ViewStyle> = style;
+  const flexStyle = { flex: 1 };
   if (flex) {
-    const flexStyle = { flex: 1 };
     computedStyle = [computedStyle, flexStyle];
   }
   let level = propsLevel ?? '1';
@@ -35,7 +38,11 @@ const Layout: FC<Props> = ({
 
   return (
     <UIKLayout style={computedStyle} level={level} {...props}>
-      {children}
+      {safe ? (
+        <SafeAreaView style={flexStyle}>{children}</SafeAreaView>
+      ) : (
+        children
+      )}
     </UIKLayout>
   );
 };

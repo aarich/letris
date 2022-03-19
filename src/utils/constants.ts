@@ -11,7 +11,7 @@ export const MyConstants = {
   appStoreUrl:
     'https://apps.apple.com/app/apple-store/id1612680145?pt=117925864&ct=ac&mt=8',
   playStoreUrl:
-    'https://play.google.com/store/apps/details?id=rich.alex.lettris',
+    'https://play.google.com/store/apps/details?id=rich.alex.letris',
   githubUrl: 'https://github.com/aarich/charts-for-supabase',
   ...Constants,
 };
