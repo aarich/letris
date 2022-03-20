@@ -1,5 +1,7 @@
 import { screened } from '../components/base/Screen';
+import FeedbackScreen from '../screens/FeedbackScreen';
 import PlayScreen from '../screens/PlayScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 import { ScreenInfo } from '../utils';
 import DrawerNavigator from './DrawerNavigator';
 
@@ -13,7 +15,7 @@ export default asScreens<ScreenInfo>([
   { name: 'Play', screen: PlayScreen, options: { headerShown: false } },
   // { name: 'About', screen: AboutScreen },
   // { name: 'Help', screen: HelpScreen },
-  // { name: 'Feedback', screen: FeedbackScreen },
-  // { name: 'Settings', screen: SettingsScreen },
+  { name: 'Feedback', screen: FeedbackScreen },
+  { name: 'Settings', screen: SettingsScreen },
   // { name: 'Stats', screen: StatsScreen },
 ]);

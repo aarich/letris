@@ -1,3 +1,4 @@
+export * from './useCanvasInfo';
 export * from './useColor';
 export * from './useColorScheme';
 export * from './useKeyboardSize';

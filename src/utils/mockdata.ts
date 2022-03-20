@@ -1,11 +1,11 @@
-import { GameState } from '../redux/reducers/GameReducer';
-import { Direction } from './types';
+import { Direction, Game } from './types';
 
-const game: GameState = {
+const game: Game = {
   rows: [],
   createdWords: [],
   incoming: { chars: 'AB', direction: Direction.LEFT, position: 3 },
   turn: 3,
+  rotations: 0,
 };
 
 export const MOCK_DATA = {

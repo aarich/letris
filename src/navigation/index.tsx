@@ -25,8 +25,8 @@ export default () => {
       <Stack.Navigator
         screenOptions={{
           header: TopNavigation(topInsets),
-          headerShown: false,
         }}
+        initialRouteName="Home"
       >
         {screens.map(({ name, screen, options }) => (
           <Stack.Screen

@@ -1,5 +1,5 @@
-import AboutContainer from '../containers/app/AboutContainer';
+import SettingsContainer from '../containers/app/SettingsContainer';
 
 export default () => {
-  return <AboutContainer />;
+  return <SettingsContainer />;
 };

@@ -1,20 +1,16 @@
 import { LinkingOptions } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
-import { DrawerParamList } from '../utils';
+import { RootStackParamList } from '../utils';
 
-type Options = LinkingOptions<DrawerParamList>;
+type Options = LinkingOptions<RootStackParamList>;
 
 const config: Options['config'] = {
-  initialRouteName: 'RootStack',
+  initialRouteName: 'Home',
   screens: {
-    RootStack: {
-      initialRouteName: 'Home',
+    Home: {
+      initialRouteName: 'HomeScreen',
       screens: {
-        Home: '/home',
-        Help: '/help',
-        About: '/about',
-        Feedback: '/feedback',
-        Settings: '/settings',
+        HomeScreen: '/home',
       },
     },
   },

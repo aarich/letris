@@ -1,5 +1,4 @@
-import { GameRow, MOCK_DATA, MyConstants } from '../../utils';
-import { IncomingState } from '../reducers/GameReducer';
+import { GameRow, Incoming, MOCK_DATA, MyConstants } from '../../utils';
 import { useAppSelector } from '../store';
 
 export const useGame = () => {
@@ -11,7 +10,7 @@ export const useGame = () => {
   return game;
 };
 
-export const useIncoming = (): IncomingState => useGame().incoming;
+export const useIncoming = (): Incoming => useGame().incoming;
 export const useCreatedWords = (): string[] => useGame().createdWords;
 export const useRows = (): GameRow[] => useGame().rows;
 export const useCurrentTurn = (): number => useGame().turn;

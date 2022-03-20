@@ -28,7 +28,7 @@ export default <T extends NativeStackHeaderProps | DrawerHeaderProps>(
 
     let canGoBack = false;
 
-    if ('pop' in navigation && 'pop' in others) {
+    if ('pop' in navigation && 'back' in others) {
       const goBack = () => navigation.pop();
       canGoBack = false;
 

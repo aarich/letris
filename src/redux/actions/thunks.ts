@@ -1,111 +1,120 @@
-import { AppSetting, Direction, findWords, log, setCharAt } from '../../utils';
-import { getRandomLetter } from '../../utils/language';
+import {
+  addIncomingCharsToTopOfGrid,
+  AppSetting,
+  CHAR_DROP_MS,
+  createNewIncoming,
+  findWords,
+  MatchedWord,
+  removeBlankSpaces,
+  validateWordSelection,
+} from '../../utils';
+import { removeWords, WORD_MATCH_MS } from '../../utils/game';
 import { AppThunk } from '../store';
-import { setGame } from './actions';
+import { setAnimation, setGame, setRows } from './actions';
 
-/** Modifies rows in place by dropping char at pos at the first blank spot */
-const addCharAtPos = (
-  rows: string[],
-  char: string,
-  pos: number,
-  rowWidth: number
-) => {
-  if (pos >= rowWidth) {
-    log('Cannot set char at position!', { pos, rowWidth, rows, char });
-    throw new Error('Developer error, please try again later.');
+export const dropCharacters = (): AppThunk => async (dispatch, getState) => {
+  // animate all missing characters
+  await new Promise<void>((resolve) => {
+    dispatch(setAnimation({ isDroppingChars: true }));
+    setTimeout(() => {
+      dispatch(setAnimation({ isDroppingChars: false }));
+      resolve();
+    }, CHAR_DROP_MS);
+  });
+
+  // Animation completed, update the state
+  const { game, settings } = getState();
+
+  const rows = removeBlankSpaces(game.rows);
+  dispatch(setRows(rows));
+
+  if (settings[AppSetting.AUTOMATIC_WORD_FIND]) {
+    dispatch(autoFindValidWords());
   }
+  return Promise.resolve();
+};
 
-  for (let i = rows.length - 1; i >= 0; i--) {
-    if (rows[i][pos] === ' ') {
-      rows[i] = setCharAt(rows[i], pos, char);
-      return;
+export const handleSelectedWords =
+  (words: MatchedWord[], isManual: boolean): AppThunk =>
+  async (dispatch, getState) => {
+    if (!words.length) {
+      return Promise.resolve();
     }
-  }
 
-  // Need to add a new row
-  let newRow = '';
-  for (let i = 0; i < rowWidth; i++) {
-    newRow += ' ';
-  }
+    const { game, settings } = getState();
+    const minWordLength = settings[AppSetting.MIN_WORD_LETTER_COUNT] || 3;
 
-  rows.unshift(newRow);
-  addCharAtPos(rows, char, pos, rowWidth);
-};
-
-const getNextIncoming = (newCharCount: number, easiness: number) => {
-  let result = '';
-  for (let i = 0; i < newCharCount; i++) {
-    result += getRandomLetter(easiness);
-  }
-  return result;
-};
-
-const addIncomingChars = ({
-  direction,
-  chars,
-  rowWidth,
-  rows,
-  pos,
-}: {
-  direction: Direction;
-  chars: string;
-  rows: string[];
-  pos: number;
-  rowWidth: number;
-}) => {
-  const addChar = (i: number, p: number) =>
-    addCharAtPos(rows, chars[i], p, rowWidth);
-
-  for (let i = 0; i < chars.length; i++) {
-    switch (direction) {
-      case Direction.RIGHT:
-        addChar(i, pos + i);
-        break;
-      case Direction.DOWN:
-        addChar(chars.length - i - 1, pos);
-        break;
-      case Direction.LEFT:
-        addChar(chars.length - i - 1, pos + i);
-        break;
-      case Direction.UP:
-        addChar(i, pos);
-        break;
+    // Validate words
+    if (isManual) {
+      validateWordSelection(words, minWordLength);
     }
-  }
+
+    // Show them on the screen
+    await new Promise<void>((resolve) => {
+      dispatch(setAnimation({ matchedWords: words }));
+      setTimeout(() => {
+        dispatch(setAnimation({ matchedWords: undefined }));
+        resolve();
+      }, WORD_MATCH_MS);
+    });
+
+    const createdWords = [
+      ...game.createdWords,
+      ...words.map((match) => match.word),
+    ];
+
+    // Update the state
+    const rows = removeWords(words, game.rows);
+    dispatch(setGame({ ...game, createdWords, rows }));
+
+    // drop characters
+    return dispatch(dropCharacters());
+  };
+
+export const autoFindValidWords = (): AppThunk => (dispatch, getState) => {
+  const { game, settings } = getState();
+
+  const rows = [...game.rows];
+  const minLength = settings[AppSetting.MIN_WORD_LETTER_COUNT];
+
+  // 1. Find valid words
+  const newWords = findWords(rows, game.rotations, minLength);
+  dispatch(handleSelectedWords(newWords, false));
+
+  // 4. Drop characters
+  return Promise.resolve();
 };
 
-export const advanceGame = (): AppThunk<void> => (dispatch, getState) => {
+/**
+ * Adds the incoming characters to the board
+ */
+export const advanceGame = (): AppThunk => async (dispatch, getState) => {
   const { settings, game } = getState();
 
+  // Calculate new game state by adding the characters to the top of the grid
   const rowWidth = settings[AppSetting.ROW_WIDTH];
-  const letterEasiness = settings[AppSetting.LETTER_EASINESS];
-  const newCharCount = settings[AppSetting.NEW_CHAR_COUNT];
 
   const {
-    turn,
     rotations,
     incoming: { direction, chars, position },
   } = game;
 
   const rows = [...game.rows];
-  const pos = (position + rotations) % rowWidth;
+  const pos = (rowWidth + position - rotations) % rowWidth;
 
-  addIncomingChars({ direction, chars, rows, pos, rowWidth });
+  // This modifies `rows`
+  addIncomingCharsToTopOfGrid({ direction, chars, rows, pos, rowWidth });
 
-  const createdWords = [...game.createdWords, ...findWords(rows)];
+  // Get new incoming chars
+  const letterEasiness = settings[AppSetting.LETTER_EASINESS];
+  const newCharCount = settings[AppSetting.NEW_CHAR_COUNT];
+  const incoming = createNewIncoming(newCharCount, letterEasiness);
 
-  dispatch(
-    setGame({
-      rotations,
-      rows,
-      incoming: {
-        chars: getNextIncoming(newCharCount, letterEasiness),
-        position: 0,
-        direction: Direction.RIGHT,
-      },
-      createdWords,
-      turn: turn + 1,
-    })
-  );
-  return Promise.resolve();
+  // Increment turn
+  const turn = game.turn + 1;
+
+  dispatch(setGame({ ...game, rows, incoming, turn }));
+
+  // drop characters
+  return dispatch(dropCharacters());
 };

@@ -12,11 +12,6 @@ import {
   NativeStackNavigationProp,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
-import { Dispatch, SetStateAction } from 'react';
-import { AlertButton } from 'react-native';
-import { IconType } from './icons';
-
-export type ValueOf<T> = T[keyof T];
 
 export type ScreenInfo = {
   name: keyof RootStackParamList;
@@ -51,29 +46,3 @@ export type RootStackNavigationProp<Screen extends keyof RootStackParamList> =
     NativeStackNavigationProp<RootStackParamList, Screen>,
     DrawerNavigationProp<DrawerParamList>
   >;
-
-export enum AppSetting {
-  HAS_REQUESTED_REVIEW = 'HAS_REQUESTED_REVIEW',
-  ROW_WIDTH = 'ROW_WIDTH',
-  NEW_CHAR_COUNT = 'NEW_CHAR_COUNT',
-  LETTER_EASINESS = 'LETTER_EASINESS',
-}
-
-export enum GameStat {
-  GAMES_PLAYED = 'GAMES_PLAYED',
-  HIGH_SCORE = 'HIGH_SCORE',
-  HIGH_TURNS = 'HIGH_TURNS',
-}
-
-export type MyAlertButton = AlertButton & { icon?: IconType };
-
-export type UpdateState<T> = Dispatch<SetStateAction<T>>;
-
-export type GameRow = string;
-
-export enum Direction {
-  UP,
-  DOWN,
-  LEFT,
-  RIGHT,
-}

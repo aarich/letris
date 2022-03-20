@@ -1,8 +1,8 @@
-import { Direction } from '../../utils';
+import { Direction, Game } from '../../utils';
 import { advanceGame, reset, rotateRows } from '../actions';
-import GameReducer, { GameState } from '../reducers/GameReducer';
+import GameReducer from '../reducers/GameReducer';
 import SettingsReducer from '../reducers/SettingsReducer';
-const game: GameState = {
+const game: Game = {
   rows: ['IJKLMNOP', 'ABCDEFGH'],
   rotations: 0,
   createdWords: [],
@@ -15,12 +15,12 @@ describe('reducer', () => {
   describe('rotateRows', () => {
     test('right', () => {
       const expected = { ...game, rotations: 1 };
-      expect(GameReducer(game, rotateRows(true))).toEqual(expected);
+      expect(GameReducer(game, rotateRows(false))).toEqual(expected);
     });
 
     test('left', () => {
       const expected = { ...game, rotations: 7 };
-      expect(GameReducer(game, rotateRows(false))).toEqual(expected);
+      expect(GameReducer(game, rotateRows(true))).toEqual(expected);
     });
   });
 });

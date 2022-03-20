@@ -1,3 +1,28 @@
+import words10 from 'wordlist-english/english-words-10.json';
+import words20 from 'wordlist-english/english-words-20.json';
+import words35 from 'wordlist-english/english-words-35.json';
+import words40 from 'wordlist-english/english-words-40.json';
+import words50 from 'wordlist-english/english-words-50.json';
+import words55 from 'wordlist-english/english-words-55.json';
+import words60 from 'wordlist-english/english-words-60.json';
+import { MatchedWord, MinLength } from './types';
+
+const WORDS = [
+  ...words10,
+  ...words20,
+  ...words35,
+  ...words40,
+  ...words50,
+  ...words55,
+  ...words60,
+].map((word) => word.toUpperCase());
+
+const WORDS_GTE_3 = WORDS.filter((w) => w.length >= 3);
+const WORDS_GTE_4 = WORDS_GTE_3.filter((w) => w.length >= 4);
+const WORDS_GTE_5 = WORDS_GTE_4.filter((w) => w.length >= 5);
+export const getWordList = (minLength: MinLength): string[] =>
+  ({ [3]: WORDS_GTE_3, [4]: WORDS_GTE_4, [5]: WORDS_GTE_5 }[minLength]);
+
 const LETTERS = [
   'A',
   'B',
@@ -38,7 +63,6 @@ const INTERVAL = FREQUENCIES[FREQUENCIES.length - 1] / LETTERS.length;
 type LookupMap = Record<typeof LETTERS[number], number>;
 
 /**
- *
  * @param easiness a number between 0 and 1, 0 means no freq correlation, 1 means 100% freq correlation
  * @returns lookup table with min = 0 and max = 100000
  */
@@ -59,6 +83,10 @@ const buildLookup = (easiness: number): LookupMap => {
   return lookup as LookupMap;
 };
 
+/**
+ * @param easiness a number between 0 and 1, 0 means no freq correlation, 1 means 100% freq correlation
+ * @returns a single letter
+ */
 export const getRandomLetter = (easiness: number): typeof LETTERS[number] => {
   const random = Math.random() * 100000;
 
@@ -70,4 +98,31 @@ export const getRandomLetter = (easiness: number): typeof LETTERS[number] => {
     }
   }
   return 'A';
+};
+
+/**
+ * @param newCharCount number of letters to return
+ * @param easiness a number between 0 and 1, 0 means no freq correlation, 1 means 100% freq correlation
+ */
+export const getRandomLetters = (
+  newCharCount: number,
+  easiness: number
+): string => {
+  let result = '';
+  for (let i = 0; i < newCharCount; i++) {
+    result += getRandomLetter(easiness);
+  }
+  return result;
+};
+
+export const validateWordSelection = (
+  words: MatchedWord[],
+  minLength: MinLength
+) => {
+  const wordList = getWordList(minLength);
+  words.forEach(({ word }) => {
+    if (!wordList.includes(word)) {
+      throw new Error(`"${word}" not found`);
+    }
+  });
 };

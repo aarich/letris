@@ -1,12 +1,8 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, IconButton, Layout, Text, View } from '../../components/base';
-import ActiveGrid from '../../components/play/ActiveGrid';
-import {
-  advanceGame,
-  reset,
-  rotateRows,
-  setIncoming,
-} from '../../redux/actions';
+import ActiveBoard from '../../components/play/ActiveBoard';
+import IncomingChars from '../../components/play/IncomingChars';
+import { setGame, setIncoming } from '../../redux/actions';
 import { useGame, useIncoming } from '../../redux/selectors';
 import { useAppDispatch } from '../../redux/store';
 import { Direction, IconsOutlined } from '../../utils';
@@ -26,6 +22,8 @@ const PlayContainer = ({ onGoBack }: Props) => {
   const dispatch = useAppDispatch();
   const incoming = useIncoming();
 
+  const { incoming: i2, rotations, createdWords } = game;
+
   return (
     <Layout flex>
       <SafeAreaView style={{ flex: 1 }}>
@@ -33,22 +31,6 @@ const PlayContainer = ({ onGoBack }: Props) => {
           <IconButton name={IconsOutlined.arrowheadLeft} onPress={onGoBack} />
         </View>
         <View row>
-          <Button
-            onPress={() =>
-              dispatch(
-                setIncoming({ ...incoming, position: incoming.position - 1 })
-              )
-            }
-            label="L"
-          />
-          <Button
-            onPress={() =>
-              dispatch(
-                setIncoming({ ...incoming, position: incoming.position + 1 })
-              )
-            }
-            label="R"
-          />
           <Button
             onPress={() =>
               dispatch(
@@ -60,32 +42,24 @@ const PlayContainer = ({ onGoBack }: Props) => {
             }
             label="Rotate"
           />
-          <Button label="Add" onPress={() => dispatch(advanceGame())}>
-            Add
-          </Button>
         </View>
 
-        <ActiveGrid
-          rotation={game.rotations}
-          rows={game.rows}
-          onRotate={(left) => dispatch(rotateRows(left))}
+        <IncomingChars />
+        <ActiveBoard />
+
+        <Button
+          onPress={() =>
+            dispatch(setGame({ ...game, rows: ['ABCDEFGH'], createdWords: [] }))
+          }
+          label="Reset"
         />
 
         <View row>
-          <Button
-            onPress={() => dispatch(rotateRows(true))}
-            label="Rotate Left"
-          />
-          <Button
-            onPress={() => dispatch(rotateRows(false))}
-            label="Rotate Right"
-          />
+          <Text flex={1}>{JSON.stringify(i2, undefined, 2)}</Text>
+          <Text flex={1}>
+            {JSON.stringify({ rotations, createdWords }, undefined, 2)}
+          </Text>
         </View>
-        <Button onPress={() => dispatch(reset())} label="Reset" />
-
-        <Text>
-          {'\n\n\n'} {JSON.stringify(game, undefined, 2)}
-        </Text>
       </SafeAreaView>
     </Layout>
   );

@@ -1,12 +1,17 @@
 {
   "name": "letris",
   "version": "1.0",
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "moduleNameMapper": {
+      "@shopify/react-native-skia": "<rootDir>/src/jest/skia"
+    }
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.1",
@@ -16,9 +21,11 @@
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.5.0",
     "@reduxjs/toolkit": "^1.8.0",
+    "@shopify/react-native-skia": "https://github.com/Shopify/react-native-skia/releases/download/v0.1.107-alpha/shopify-react-native-skia-0.1.107.tgz",
     "@ui-kitten/components": "^5.1.1",
     "@ui-kitten/eva-icons": "^5.1.1",
     "expo": "~44.0.6",
+    "expo-app-loading": "~1.3.0",
     "expo-application": "~4.0.2",
     "expo-asset": "~8.4.6",
     "expo-clipboard": "~2.1.1",
@@ -38,7 +45,7 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
-    "react-native-gesture-handler": "~2.1.0",
+    "react-native-gesture-handler": "~2.3.0",
     "react-native-get-random-values": "~1.7.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-reanimated": "~2.4.1",
@@ -52,8 +59,7 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.1",
     "uuid": "^8.3.2",
-    "wordlist-english": "^1.2.1",
-    "expo-app-loading": "~1.3.0"
+    "wordlist-english": "^1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
