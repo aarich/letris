@@ -1,6 +1,6 @@
 import { vec } from '../../jest/skia';
 import {
-  addIncomingCharsToTopOfGrid,
+  addIncomingChars,
   findWords,
   isNextTo,
   removeBlankSpaces,
@@ -69,7 +69,7 @@ describe('findWords', () => {
   });
 });
 
-describe('addIncomingCharsToTopOfGrid', () => {
+describe('addIncomingChars', () => {
   let chars: string, pos: number, rowWidth: number, direction: Direction;
   beforeEach(() => {
     chars = 'AB';
@@ -86,7 +86,7 @@ describe('addIncomingCharsToTopOfGrid', () => {
   ])('%#', (d, expected) => {
     test(`test ${Direction[d]}`, () => {
       const rows: string[] = [];
-      addIncomingCharsToTopOfGrid({ direction: d, chars, rowWidth, rows, pos });
+      addIncomingChars({ direction: d, chars, rowWidth, rows, pos });
       expect(rows).toEqual(expected);
     });
   });
@@ -94,27 +94,24 @@ describe('addIncomingCharsToTopOfGrid', () => {
   test('at end of row', () => {
     pos = 4;
     const rows: string[] = [];
-    addIncomingCharsToTopOfGrid({ direction, chars, rowWidth, rows, pos });
+    addIncomingChars({ direction, chars, rowWidth, rows, pos });
     expect(rows[0]).toEqual('B   A');
   });
 
   test('at start of row', () => {
     pos = 0;
     const rows: string[] = [' BCDE'];
-    addIncomingCharsToTopOfGrid({ direction, chars, rowWidth, rows, pos });
+    addIncomingChars({ direction, chars, rowWidth, rows, pos });
     expect(rows[0]).toEqual('AB   ');
   });
 });
 
 describe('removeBlankSpaces', () => {
   test.each([
-    [
-      ['A B', '   '],
-      ['   ', 'A B'],
-    ],
+    [['A B', '   '], ['A B']],
     [
       [' A B', 'C D ', 'E   ', '    '],
-      ['    ', '    ', 'C   ', 'EADB'],
+      ['C   ', 'EADB'],
     ],
   ])('%#: %p', (rows, expected) => {
     expect(removeBlankSpaces(rows)).toEqual(expected);
@@ -123,22 +120,30 @@ describe('removeBlankSpaces', () => {
 
 describe('isNextTo', () => {
   test.each([
-    [3, 3, 3, 3],
-    [0, 1, 1, 0],
-    [0, 0, 0, 1],
-    [0, 0, 1, 0],
-    [0, 8, 4, 9],
-    [4, 0, 0, 0],
-    [0, 0, 1, 0],
-  ])('%#: [%p, %p] is next to [%p, %p]', (x1, y1, x2, y2) => {
-    expect(isNextTo(vec(x1, y1), vec(x2, y2), 5)).toBe(true);
-  });
+    [3, 3, 3, 3, false],
+    [0, 1, 1, 0, true],
+    [0, 0, 0, 1, false],
+    [0, 0, 1, 0, false],
+    [0, 8, 4, 9, true],
+    [4, 0, 0, 0, false],
+    [0, 0, 1, 0, false],
+  ])(
+    '%#: [%p, %p] is next to [%p, %p] when allowDiagonal is %p',
+    (x1, y1, x2, y2, allowDiagonal) => {
+      expect(isNextTo(vec(x1, y1), vec(x2, y2), 5, allowDiagonal)).toBe(true);
+    }
+  );
 
   test.each([
-    [0, 1, 0, 3],
-    [0, 3, 3, 3],
-    [1, 0, 4, 0],
-  ])('%#: [%p, %p] is _not_ next to [%p, %p]', (x1, y1, x2, y2) => {
-    expect(isNextTo(vec(x1, y1), vec(x2, y2), 5)).toBe(false);
-  });
+    [0, 1, 0, 3, true],
+    [0, 3, 3, 3, true],
+    [1, 0, 4, 0, true],
+    [1, 0, 0, 1, false],
+    [1, 1, 2, 2, false],
+  ])(
+    '%#: [%p, %p] is _not_ next to [%p, %p] when allowDiagonal is %p',
+    (x1, y1, x2, y2, allowDiagonal) => {
+      expect(isNextTo(vec(x1, y1), vec(x2, y2), 5, allowDiagonal)).toBe(false);
+    }
+  );
 });

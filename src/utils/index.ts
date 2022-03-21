@@ -2,13 +2,16 @@ export * from './appearance';
 export * from './arrays';
 export * from './constants';
 export {
-  addIncomingCharsToTopOfGrid,
+  addIncomingChars,
   CHAR_DROP_MS,
   createNewIncoming,
   findWords,
   FONT_SIZE,
+  getNextDirection,
+  isNextTo,
   removeBlankSpaces,
-  setCharAt,
+  removeWords,
+  WORD_MATCH_MS,
 } from './game';
 export * from './icons';
 export * from './interactions';

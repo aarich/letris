@@ -104,6 +104,12 @@ const SettingsContainer = () => {
       'Detect Words',
       'Automatically searches for words horizontally and vertically after each drop'
     ),
+    makeBoolean(
+      AppSetting.ALLOW_DIAGONAL,
+      IconsOutlined.expand,
+      'Allow Diagonal',
+      'Allow connecting characters diagonally'
+    ),
     makeSelect(
       AppSetting.ROW_WIDTH,
       numberOpts([5, 6, 7, 8, 9, 10]),
@@ -115,7 +121,7 @@ const SettingsContainer = () => {
     makeSelect(
       AppSetting.NEW_CHAR_COUNT,
       numberOpts([2, 3, 4]),
-      IconsOutlined.hash,
+      IconsOutlined.download,
       'Incoming Character Width',
       'Size of incoming characters',
       true
@@ -165,7 +171,7 @@ const SettingsContainer = () => {
           ]
         ),
       false,
-      IconsOutlined.trash,
+      IconsOutlined.trash2,
       'Reset App',
       'Seeing something buggy? Want a fresh start?'
     ),

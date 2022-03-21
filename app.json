@@ -29,8 +29,7 @@
       },
       "config": {
         "usesNonExemptEncryption": false
-      },
-      "bitcode": false
+      }
     },
     "android": {
       "playStoreUrl": "https://play.google.com/store/apps/details?id=rich.alex.letris",

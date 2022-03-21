@@ -1,25 +1,29 @@
 import { vec } from '@shopify/react-native-skia';
 import { Reducer, useCallback, useEffect, useReducer, useState } from 'react';
-import { handleSelectedWords, rotateRows } from '../../redux/actions';
+import {
+  advanceGame,
+  handleSelectedWords,
+  rotateRows,
+} from '../../redux/actions';
 import { useGame, useSetting } from '../../redux/selectors';
 import { useAppDispatch } from '../../redux/store';
-import { AppSetting, GameRow, MatchedWord, toast } from '../../utils';
-import { isNextTo } from '../../utils/game';
+import { AppSetting, GameRow, isNextTo, MatchedWord, toast } from '../../utils';
 import { View } from '../base';
 import Grid from '../render/Grid';
 
 type WordReducer = Reducer<
   MatchedWord | undefined,
-  { row: number; col: number; rows: GameRow[] } | undefined
+  | { row: number; col: number; rows: GameRow[]; allowDiagonal: boolean }
+  | undefined
 >;
 
-const WORD_MATCHER_DELAY_MS = 2000;
+const WORD_MATCHER_DELAY_MS = 1700;
 
 const MatchedWordReducer: WordReducer = (s, a) => {
   if (!a || !a.rows.length) {
     return undefined;
   }
-  const { row, col, rows } = a;
+  const { row, col, rows, allowDiagonal } = a;
   const existingCharIndex = s?.chars.findIndex(
     (c) => c.x === col && c.y === row
   );
@@ -39,7 +43,12 @@ const MatchedWordReducer: WordReducer = (s, a) => {
       const ret = { ...(s || { word: '', chars: [] }) };
       if (
         ret.chars.length &&
-        !isNextTo(ret.chars[ret.chars.length - 1], newPos, rows[0].length)
+        !isNextTo(
+          ret.chars[ret.chars.length - 1],
+          newPos,
+          rows[0].length,
+          allowDiagonal
+        )
       ) {
         // We need to start a new word
         ret.chars = [];
@@ -59,6 +68,7 @@ const MatchedWordReducer: WordReducer = (s, a) => {
 const ActiveBoard = () => {
   const game = useGame();
   const rowWidth = useSetting(AppSetting.ROW_WIDTH);
+  const allowDiagonal = useSetting(AppSetting.ALLOW_DIAGONAL);
   const dispatch = useAppDispatch();
   const [matchedWord, selectChar] = useReducer<WordReducer>(
     MatchedWordReducer,
@@ -82,9 +92,9 @@ const ActiveBoard = () => {
   const onTap = useCallback(
     (row: number, col: number) => {
       const rotatedCol = (rowWidth + col - game.rotations) % rowWidth;
-      selectChar({ col: rotatedCol, row, rows: game.rows });
+      selectChar({ col: rotatedCol, row, rows: game.rows, allowDiagonal });
     },
-    [game.rotations, game.rows, rowWidth]
+    [allowDiagonal, game.rotations, game.rows, rowWidth]
   );
 
   const onPan = useCallback(
@@ -110,6 +120,7 @@ const ActiveBoard = () => {
         rotation={game.rotations}
         rows={game.rows}
         onFlingHorizontal={matchedWord ? undefined : onRotate}
+        onFlingVertical={(down) => down && dispatch(advanceGame())}
         onTap={onTap}
         onPan={matchedWord ? onPan : undefined}
         onPanEnd={onPanEnd}

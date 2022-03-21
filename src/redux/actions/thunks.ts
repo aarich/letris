@@ -1,32 +1,54 @@
 import {
-  addIncomingCharsToTopOfGrid,
+  addIncomingChars,
   AppSetting,
   CHAR_DROP_MS,
   createNewIncoming,
   findWords,
+  GameStat,
   MatchedWord,
   removeBlankSpaces,
+  removeWords,
+  toast,
   validateWordSelection,
+  WORD_MATCH_MS,
 } from '../../utils';
-import { removeWords, WORD_MATCH_MS } from '../../utils/game';
 import { AppThunk } from '../store';
-import { setAnimation, setGame, setRows } from './actions';
+import {
+  resetGameAction,
+  setAnimation,
+  setGame,
+  setGameStat,
+  setRows,
+} from './actions';
 
 export const dropCharacters = (): AppThunk => async (dispatch, getState) => {
-  // animate all missing characters
-  await new Promise<void>((resolve) => {
-    dispatch(setAnimation({ isDroppingChars: true }));
-    setTimeout(() => {
-      dispatch(setAnimation({ isDroppingChars: false }));
-      resolve();
-    }, CHAR_DROP_MS);
-  });
-
-  // Animation completed, update the state
   const { game, settings } = getState();
 
   const rows = removeBlankSpaces(game.rows);
-  dispatch(setRows(rows));
+
+  let changesExist = rows.length !== game.rows.length;
+  for (let i = 0; i < rows.length; i++) {
+    if (changesExist) {
+      break;
+    }
+
+    // arrays are the same length
+    changesExist = rows[i] !== game.rows[i];
+  }
+
+  if (changesExist) {
+    // animate all missing characters
+    await new Promise<void>((resolve) => {
+      dispatch(setAnimation({ isDroppingChars: true }));
+      setTimeout(() => {
+        dispatch(setAnimation({ isDroppingChars: false }));
+        resolve();
+      }, CHAR_DROP_MS);
+    });
+
+    // Animation completed, update the state
+    dispatch(setRows(rows));
+  }
 
   if (settings[AppSetting.AUTOMATIC_WORD_FIND]) {
     dispatch(autoFindValidWords());
@@ -41,12 +63,16 @@ export const handleSelectedWords =
       return Promise.resolve();
     }
 
-    const { game, settings } = getState();
+    const { game, settings, stats } = getState();
     const minWordLength = settings[AppSetting.MIN_WORD_LETTER_COUNT] || 3;
+    let longestWord = stats[GameStat.LONGEST_WORD];
+    const foundWords = stats[GameStat.WORDS_FOUND] ?? 0;
 
     // Validate words
     if (isManual) {
       validateWordSelection(words, minWordLength);
+      // success
+      toast(words[0].word, 'success', 1000);
     }
 
     // Show them on the screen
@@ -58,10 +84,20 @@ export const handleSelectedWords =
       }, WORD_MATCH_MS);
     });
 
-    const createdWords = [
-      ...game.createdWords,
-      ...words.map((match) => match.word),
-    ];
+    const newWords = words.map((match) => match.word);
+    const createdWords = [...game.createdWords, ...newWords];
+
+    longestWord = newWords.reduce(
+      (prev, word) => (word.length > prev.length ? word : prev),
+      longestWord || ''
+    );
+
+    dispatch(
+      setGameStat({
+        [GameStat.LONGEST_WORD]: longestWord,
+        [GameStat.WORDS_FOUND]: foundWords + newWords.length,
+      })
+    );
 
     // Update the state
     const rows = removeWords(words, game.rows);
@@ -89,7 +125,7 @@ export const autoFindValidWords = (): AppThunk => (dispatch, getState) => {
  * Adds the incoming characters to the board
  */
 export const advanceGame = (): AppThunk => async (dispatch, getState) => {
-  const { settings, game } = getState();
+  const { settings, game, stats } = getState();
 
   // Calculate new game state by adding the characters to the top of the grid
   const rowWidth = settings[AppSetting.ROW_WIDTH];
@@ -103,7 +139,7 @@ export const advanceGame = (): AppThunk => async (dispatch, getState) => {
   const pos = (rowWidth + position - rotations) % rowWidth;
 
   // This modifies `rows`
-  addIncomingCharsToTopOfGrid({ direction, chars, rows, pos, rowWidth });
+  addIncomingChars({ direction, chars, rows, pos, rowWidth });
 
   // Get new incoming chars
   const letterEasiness = settings[AppSetting.LETTER_EASINESS];
@@ -112,9 +148,22 @@ export const advanceGame = (): AppThunk => async (dispatch, getState) => {
 
   // Increment turn
   const turn = game.turn + 1;
+  if ((stats.HIGH_TURNS ?? 0) < turn) {
+    dispatch(setGameStat({ [GameStat.HIGH_TURNS]: turn }));
+  }
 
   dispatch(setGame({ ...game, rows, incoming, turn }));
 
   // drop characters
   return dispatch(dropCharacters());
+};
+
+export const resetGame = (): AppThunk => (dispatch, getState) => {
+  const { settings } = getState();
+  const letterEasiness = settings[AppSetting.LETTER_EASINESS];
+  const newCharCount = settings[AppSetting.NEW_CHAR_COUNT];
+  const incoming = createNewIncoming(newCharCount, letterEasiness);
+
+  dispatch(resetGameAction(incoming));
+  return Promise.resolve();
 };

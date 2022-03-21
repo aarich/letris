@@ -5,6 +5,7 @@ import words40 from 'wordlist-english/english-words-40.json';
 import words50 from 'wordlist-english/english-words-50.json';
 import words55 from 'wordlist-english/english-words-55.json';
 import words60 from 'wordlist-english/english-words-60.json';
+import words70 from 'wordlist-english/english-words-70.json';
 import { MatchedWord, MinLength } from './types';
 
 const WORDS = [
@@ -15,6 +16,7 @@ const WORDS = [
   ...words50,
   ...words55,
   ...words60,
+  ...words70,
 ].map((word) => word.toUpperCase());
 
 const WORDS_GTE_3 = WORDS.filter((w) => w.length >= 3);
@@ -121,6 +123,9 @@ export const validateWordSelection = (
 ) => {
   const wordList = getWordList(minLength);
   words.forEach(({ word }) => {
+    if (word.length < minLength) {
+      throw new Error(`"${word}" is too short`);
+    }
     if (!wordList.includes(word)) {
       throw new Error(`"${word}" not found`);
     }

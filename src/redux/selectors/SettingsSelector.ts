@@ -15,8 +15,10 @@ export const useEasinessScore = (): number => {
   const rowWidth = useSetting(AppSetting.ROW_WIDTH);
   const letterEasiness = useSetting(AppSetting.LETTER_EASINESS);
   const minWordLetterCount = useSetting(AppSetting.MIN_WORD_LETTER_COUNT);
+  const allowDiagonal = useSetting(AppSetting.ALLOW_DIAGONAL);
 
   let result = automaticWordFind ? 0.8 : 1;
+  result *= allowDiagonal ? 0.9 : 1;
   result *= newCharCount / 4;
   result *= (15 - rowWidth) / 10;
   result *= (letterEasiness + 3) / 4;

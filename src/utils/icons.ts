@@ -338,6 +338,8 @@ export const Icons = nicer({
   collapse: 'collapse',
   minus: 'minus',
   globe: 'globe',
+  download: 'download',
+  trash2: 'trash-2',
 });
 
 export const IconsOutlined = Object.keys(Icons)

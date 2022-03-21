@@ -1,7 +1,14 @@
 import { produce } from 'immer';
 import { AnyAction } from 'redux';
 import { Direction, Game } from '../../utils';
-import { reset, rotateRows, setGame, setIncoming, setRows } from '../actions';
+import {
+  reset,
+  resetGameAction,
+  rotateRows,
+  setGame,
+  setIncoming,
+  setRows,
+} from '../actions';
 
 type GameState = Game;
 
@@ -10,7 +17,7 @@ const initialState: GameState = {
   turn: 0,
   rotations: 0,
   createdWords: [],
-  incoming: { chars: 'AB', direction: Direction.RIGHT, position: 0 },
+  incoming: { chars: '', direction: Direction.RIGHT, position: 0 },
 };
 
 const GameReducer = (state = initialState, action: AnyAction): GameState =>
@@ -29,6 +36,8 @@ const GameReducer = (state = initialState, action: AnyAction): GameState =>
       const { length } = draft.rows[0];
       // keep rotations a number in [0, rowLength)
       draft.rotations = (draft.rotations + rotation + length) % length;
+    } else if (resetGameAction.match(action)) {
+      return { ...initialState, incoming: action.payload };
     } else if (reset.match(action)) {
       return initialState;
     }

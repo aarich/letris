@@ -7,9 +7,13 @@ type Props = RootStackScreenProps<'Home'>;
 
 const PlayScreen = ({ navigation }: Props) => {
   const onGoBack = useCallback(() => navigation.pop(), [navigation]);
+  const onGoToHelp = useCallback(
+    () => navigation.navigate('Help'),
+    [navigation]
+  );
   return (
     <Layout flex l2>
-      <PlayContainer onGoBack={onGoBack} />
+      <PlayContainer onGoBack={onGoBack} onGoToHelp={onGoToHelp} />
     </Layout>
   );
 };

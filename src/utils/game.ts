@@ -99,6 +99,11 @@ export const removeBlankSpaces = (rows: string[]): string[] => {
     }
   }
 
+  // Remove blank rows at the top
+  while (ret.length && ret[0].match(/^ *$/)) {
+    ret.shift();
+  }
+
   return ret;
 };
 
@@ -122,7 +127,7 @@ export const findWords = (
   return found;
 };
 
-export const addIncomingCharsToTopOfGrid = ({
+export const addIncomingChars = ({
   direction,
   chars,
   rowWidth,
@@ -190,6 +195,38 @@ export const removeWords = (words: MatchedWord[], rows: string[]): string[] => {
   return clonedRows;
 };
 
-export const isNextTo = (v1: Vector, v2: Vector, rowWidth: number) =>
-  Math.abs(v1.y - v2.y) <= 1 &&
-  (Math.abs(v1.x - v2.x) <= 1 || Math.abs(v1.x - v2.x) === rowWidth - 1);
+export const isNextTo = (
+  v1: Vector,
+  v2: Vector,
+  rowWidth: number,
+  allowDiagonal: boolean
+) => {
+  // Can't be more than 1 away vertically
+  const diffY = Math.abs(v1.y - v2.y);
+  if (diffY > 1) {
+    return false;
+  }
+
+  // Can't be more than 1 away horizontally (including wraparound)
+  let diffX = Math.abs(v1.x - v2.x);
+  if (diffX === rowWidth - 1) {
+    diffX = 1;
+  }
+  if (diffX > 1) {
+    return false;
+  }
+
+  if (diffX === 1 && diffY === 1) {
+    return allowDiagonal;
+  }
+
+  return true;
+};
+
+export const getNextDirection = (dir: Direction): Direction =>
+  ({
+    [Direction.RIGHT]: Direction.DOWN,
+    [Direction.DOWN]: Direction.LEFT,
+    [Direction.LEFT]: Direction.UP,
+    [Direction.UP]: Direction.RIGHT,
+  }[dir]);
