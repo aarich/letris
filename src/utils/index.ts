@@ -6,18 +6,17 @@ export {
   CHAR_DROP_MS,
   createNewIncoming,
   findWords,
-  FONT_SIZE,
   getNextDirection,
-  isNextTo,
-  removeBlankSpaces,
-  removeWords,
+  getWordScore,
   WORD_MATCH_MS,
 } from './game';
+export * from './grid';
 export * from './icons';
 export * from './interactions';
 export * from './language';
 export * from './log';
 export * from './misc';
 export * from './mockdata';
+export * from './string';
 export * from './style';
 export * from './types';

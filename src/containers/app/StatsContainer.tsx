@@ -1,17 +1,40 @@
 import { useEffect } from 'react';
 import { OutputTable, Text, View } from '../../components/base';
+import { StatsState } from '../../redux/reducers/StatsReducer';
 import { useStats } from '../../redux/selectors';
-import { GameStat, MyConstants } from '../../utils';
+import { GameStat, getWordScore, MyConstants } from '../../utils';
 
 const getLabel = (stat: GameStat): string =>
   ({
-    [GameStat.GAMES_PLAYED]: 'Games Played',
+    [GameStat.TOTAL_GAMES]: 'Games Played',
+    [GameStat.TOTAL_TURNS]: 'Average Turns per Game',
+    [GameStat.TOTAL_SCORE]: 'Average Score per Game',
+    [GameStat.TOTAL_WORDS]: 'Words Found',
     [GameStat.HIGH_SCORE]: 'High Score',
     [GameStat.HIGH_TURNS]: 'Most Turns',
-    [GameStat.AVERAGE_TURNS]: 'Average Turns per Game',
     [GameStat.LONGEST_WORD]: 'Longest Word',
-    [GameStat.WORDS_FOUND]: 'Words Found',
+    [GameStat.HIGHEST_SCORING_WORD]: 'Highest Scoring Word',
   }[stat]);
+
+const getValue = (
+  stats: StatsState,
+  stat: GameStat
+): string | number | undefined => {
+  const value = stats[stat];
+  switch (stat) {
+    case GameStat.HIGHEST_SCORING_WORD:
+      return value ? `${value} (${getWordScore(value as string)})` : undefined;
+    case GameStat.TOTAL_TURNS:
+    case GameStat.TOTAL_SCORE: {
+      const total = stats[GameStat.TOTAL_GAMES] ?? 0;
+      return value != null && total
+        ? ((value as number) / total).toFixed(0)
+        : 0;
+    }
+    default:
+      return value;
+  }
+};
 
 type Props = { setShareMessage: (message: string) => void };
 
@@ -20,7 +43,7 @@ export default ({ setShareMessage }: Props) => {
   const data = Object.values(GameStat)
     .map((stat) => ({
       label: getLabel(stat),
-      value: stats[stat],
+      value: getValue(stats, stat),
     }))
     .filter(({ value }) => value);
 
@@ -36,7 +59,7 @@ export default ({ setShareMessage }: Props) => {
   );
 
   let infoText = "You're just getting started";
-  const gamesPlayed = stats.GAMES_PLAYED ?? 0;
+  const gamesPlayed = stats[GameStat.TOTAL_GAMES] ?? 0;
   if (gamesPlayed > 10) {
     infoText = "You're testing the waters. Nice going!";
   } else if (gamesPlayed > 100) {

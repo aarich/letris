@@ -64,6 +64,7 @@ const ButtonGroupPicker = <T extends string>({
               styles.buttonFullWidth,
               getBorderStyleForPosition(i, options.length),
             ]}
+            size="small"
           />
         ))}
       </View>

@@ -1,7 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import {
   NativeStackNavigationOptions,
-  NativeStackNavigationProp,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
@@ -27,8 +26,8 @@ export type RootStackParamList = {
   Stats: undefined;
 };
 
-export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
-  NativeStackScreenProps<RootStackParamList, Screen>;
+export type RootStackScreenProps<S extends keyof RootStackParamList> =
+  NativeStackScreenProps<RootStackParamList, S>;
 
-export type RootStackNavigationProp<Screen extends keyof RootStackParamList> =
-  NativeStackNavigationProp<RootStackParamList, Screen>;
+export type RootStackNavigationProp<S extends keyof RootStackParamList> =
+  RootStackScreenProps<S>['navigation'];

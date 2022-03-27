@@ -131,3 +131,28 @@ export const validateWordSelection = (
     }
   });
 };
+
+const ones = ['A', 'E', 'I', 'L', 'N', 'R', 'U', 'O', 'S', 'T'];
+const twos = ['D', 'G'];
+const threes = ['B', 'C', 'M', 'P'];
+const fours = ['F', 'H', 'V', 'W', 'Y'];
+const fives = ['K'];
+const eights = ['J', 'X'];
+
+export const getLetterScore = (letter: string) => {
+  if (ones.includes(letter)) {
+    return 1;
+  } else if (twos.includes(letter)) {
+    return 2;
+  } else if (threes.includes(letter)) {
+    return 3;
+  } else if (fours.includes(letter)) {
+    return 4;
+  } else if (fives.includes(letter)) {
+    return 5;
+  } else if (eights.includes(letter)) {
+    return 8;
+  } else {
+    return 10;
+  }
+};

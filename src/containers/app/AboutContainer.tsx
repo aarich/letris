@@ -13,23 +13,26 @@ const elements = [
     a(PRIVACY_URL, 'here'),
     '.'
   ),
-  p(
-    '\nAll information is stored locally. The only network requests are made between your device and the Supabase connection provided.'
-  ),
   h4('Acknowledgements'),
-  p(
-    'This app is not affiliated with Supabase in any way (other than the developer being a happy customer).\nCopyrights and trademarks may be owned by Supabase.\n'
-  ),
   p(
     'Thanks to the following open source software and free services for making this project possible.'
   ),
   [
     { name: 'Expo', url: 'expo.dev' },
     { name: 'React Native', url: 'reactnative.dev' },
+    { name: 'React Native Skia', url: 'shopify.github.io/react-native-skia/' },
+    { name: 'Redux', url: 'redux.js.org/' },
     { name: 'UI Kitten', url: 'akveo.github.io/react-native-ui-kitten' },
   ].map((link) => (
     <Fragment key={link.name}>{p(a(link.url, link.name))}</Fragment>
   )),
+  p(
+    a(
+      'https://github.com/aarich/letris/blob/master/package.json',
+      'And many more...',
+      { showIcon: true }
+    )
+  ),
   h4("Who's building this?"),
   p(
     'You can find out more about the developer ',
@@ -39,8 +42,8 @@ const elements = [
   p(),
   p(
     `Want to see your name here? ${MyConstants.manifest?.name} is open source! `,
-    a('github.com/aarich/charts-for-supabase', 'Check it out on GitHub'),
-    ' and, if you like, make an improvement. We are also built on top of great open source software like the ones listed above.'
+    a('github.com/aarich/letris', 'Check it out on GitHub'),
+    ' and, if you like, make an improvement.'
   ),
   p(),
   p(

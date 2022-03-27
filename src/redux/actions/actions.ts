@@ -19,6 +19,7 @@ export const setGame = createAction<Game>('Game/SET');
 export const setRows = createAction<GameRow[]>('Game/SET_ROWS');
 export const setIncoming = createAction<Incoming>('Game/SET_INCOMING');
 export const rotateRows = createAction<boolean>('Game/ROTATE_ROWS');
+export const newGame = createAction('Game/NEW');
 
 export const setAnimation =
   createAction<Partial<AnimationState>>('Animation/SET');

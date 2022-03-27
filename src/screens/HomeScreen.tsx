@@ -1,8 +1,13 @@
+import { DrawerScreenProps } from '@react-navigation/drawer';
+import { CompositeScreenProps } from '@react-navigation/native';
 import { Layout } from '../components/base';
 import HomeContainer from '../containers/home/HomeContainer';
-import { RootStackScreenProps } from '../utils';
+import { DrawerParamList, RootStackScreenProps } from '../utils';
 
-type Props = RootStackScreenProps<'Home'>;
+type Props = CompositeScreenProps<
+  RootStackScreenProps<'Home'>,
+  DrawerScreenProps<DrawerParamList, never>
+>;
 
 const HomeScreen = ({ navigation }: Props) => {
   const onGoToPlay = () => navigation.push('Play');

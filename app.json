@@ -20,7 +20,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "1",
+      "buildNumber": "4",
       "supportsTablet": true,
       "bundleIdentifier": "com.mrarich.letris",
       "appStoreUrl": "https://apps.apple.com/app/apple-store/id1612680145?pt=117925864&ct=aj&mt=8",
@@ -52,6 +52,19 @@
           "include": ["@ui-kitten/components"]
         }
       }
+    },
+    "plugins": ["sentry-expo"],
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "alex-rich",
+            "project": "predictions",
+            "authToken": "SENTRY_AUTH_TOKEN"
+          }
+        }
+      ]
     }
   }
 }

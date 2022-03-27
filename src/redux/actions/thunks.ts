@@ -5,6 +5,7 @@ import {
   createNewIncoming,
   findWords,
   GameStat,
+  getWordScore,
   MatchedWord,
   removeBlankSpaces,
   removeWords,
@@ -37,21 +38,24 @@ export const dropCharacters = (): AppThunk => async (dispatch, getState) => {
   }
 
   if (changesExist) {
-    // animate all missing characters
-    await new Promise<void>((resolve) => {
-      dispatch(setAnimation({ isDroppingChars: true }));
-      setTimeout(() => {
-        dispatch(setAnimation({ isDroppingChars: false }));
-        resolve();
-      }, CHAR_DROP_MS);
-    });
+    const animate = settings[AppSetting.ANIMATIONS_ENABLED];
+    if (animate) {
+      await new Promise<void>((resolve) => {
+        dispatch(setAnimation({ isDroppingChars: true }));
+        setTimeout(() => {
+          resolve();
+        }, CHAR_DROP_MS);
+      });
+    }
 
     // Animation completed, update the state
     dispatch(setRows(rows));
   }
 
+  dispatch(setAnimation({ isDroppingChars: false, isDroppingIncoming: false }));
+
   if (settings[AppSetting.AUTOMATIC_WORD_FIND]) {
-    dispatch(autoFindValidWords());
+    return dispatch(autoFindValidWords());
   }
   return Promise.resolve();
 };
@@ -66,42 +70,66 @@ export const handleSelectedWords =
     const { game, settings, stats } = getState();
     const minWordLength = settings[AppSetting.MIN_WORD_LETTER_COUNT] || 3;
     let longestWord = stats[GameStat.LONGEST_WORD];
-    const foundWords = stats[GameStat.WORDS_FOUND] ?? 0;
+    let highScoreWord = stats[GameStat.HIGHEST_SCORING_WORD];
+    let highScore = stats[GameStat.HIGH_SCORE];
+    const totalWords = stats[GameStat.TOTAL_WORDS] ?? 0;
+    const totalScore = stats[GameStat.TOTAL_SCORE] ?? 0;
 
     // Validate words
     if (isManual) {
       validateWordSelection(words, minWordLength);
       // success
-      toast(words[0].word, 'success', 1000);
+      toast(
+        `${words[0].word} (+${getWordScore(words[0].word)})`,
+        'success',
+        1000
+      );
     }
 
     // Show them on the screen
-    await new Promise<void>((resolve) => {
-      dispatch(setAnimation({ matchedWords: words }));
-      setTimeout(() => {
-        dispatch(setAnimation({ matchedWords: undefined }));
-        resolve();
-      }, WORD_MATCH_MS);
-    });
+    if (!isManual) {
+      await new Promise<void>((resolve) => {
+        dispatch(setAnimation({ matchedWords: words }));
+        setTimeout(() => {
+          dispatch(setAnimation({ matchedWords: undefined }));
+          resolve();
+        }, WORD_MATCH_MS);
+      });
+    }
 
     const newWords = words.map((match) => match.word);
     const createdWords = [...game.createdWords, ...newWords];
+    const newScore = newWords.reduce((s, w) => s + getWordScore(w), 0);
 
-    longestWord = newWords.reduce(
-      (prev, word) => (word.length > prev.length ? word : prev),
-      longestWord || ''
-    );
+    if (isManual) {
+      // only update longest and highest scoring word if manual
+      longestWord = newWords.reduce(
+        (prev, word) => (word.length > prev.length ? word : prev),
+        longestWord || ''
+      );
+      // if manual, only one word possible
+      highScoreWord =
+        newScore > getWordScore(highScoreWord ?? '')
+          ? newWords[0]
+          : highScoreWord;
+    }
+
+    const score = (game.score || 0) + newScore;
+    highScore = score > (highScore ?? 0) ? score : highScore;
 
     dispatch(
       setGameStat({
         [GameStat.LONGEST_WORD]: longestWord,
-        [GameStat.WORDS_FOUND]: foundWords + newWords.length,
+        [GameStat.HIGHEST_SCORING_WORD]: highScoreWord,
+        [GameStat.TOTAL_WORDS]: totalWords + newWords.length,
+        [GameStat.TOTAL_SCORE]: totalScore + newScore,
+        [GameStat.HIGH_SCORE]: highScore,
       })
     );
 
     // Update the state
     const rows = removeWords(words, game.rows);
-    dispatch(setGame({ ...game, createdWords, rows }));
+    dispatch(setGame({ ...game, createdWords, rows, score }));
 
     // drop characters
     return dispatch(dropCharacters());
@@ -151,11 +179,16 @@ export const advanceGame = (): AppThunk => async (dispatch, getState) => {
   if ((stats.HIGH_TURNS ?? 0) < turn) {
     dispatch(setGameStat({ [GameStat.HIGH_TURNS]: turn }));
   }
+  const totalTurns = stats[GameStat.TOTAL_TURNS] ?? 0;
+  dispatch(setGameStat({ [GameStat.TOTAL_TURNS]: totalTurns + 1 }));
 
   dispatch(setGame({ ...game, rows, incoming, turn }));
 
   // drop characters
-  return dispatch(dropCharacters());
+  dispatch(setAnimation({ isDroppingIncoming: true }));
+  return dispatch(dropCharacters()).finally(() =>
+    dispatch(setAnimation({ isDroppingIncoming: false }))
+  );
 };
 
 export const resetGame = (): AppThunk => (dispatch, getState) => {

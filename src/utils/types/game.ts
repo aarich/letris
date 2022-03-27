@@ -23,6 +23,7 @@ export type Game = {
   incoming: Incoming;
   turn: number;
   rotations: number;
+  score: number;
 };
 
 export type MatchedWord = {

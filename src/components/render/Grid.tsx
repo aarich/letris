@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Directions,
   Gesture,
@@ -6,10 +6,11 @@ import {
 } from 'react-native-gesture-handler';
 import { Gesture as GestureType } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gesture';
 import { useSetting } from '../../redux/selectors';
-import { AppSetting, FONT_SIZE, MatchedWord } from '../../utils';
+import { AppSetting, CharDesinations, MatchedWord } from '../../utils';
 import { useCanvasWidth, useCharWidth } from '../../utils/hooks';
 import { View } from '../base';
 import RotatableGrid from './RotatableGrid';
+import RotatableGridSvg from './RotatableGridSvg';
 
 type Props = {
   rows: string[];
@@ -20,8 +21,10 @@ type Props = {
   onTap?: (row: number, col: number) => void;
   onPan?: (row: number, col: number) => void;
   onPanEnd?: VoidFunction;
-  flex?: boolean;
+  onMaxRowsReached: VoidFunction;
   height?: number;
+  charDestinations?: CharDesinations;
+  showGridLines?: boolean;
 };
 
 const fling = (d: Directions, action: VoidFunction) =>
@@ -31,18 +34,29 @@ const Grid = ({
   rows,
   rotation,
   matchedWord,
+  height,
+  charDestinations,
+  showGridLines = false,
   onFlingHorizontal,
   onFlingVertical,
   onTap,
   onPan,
   onPanEnd,
-  flex,
-  height,
+  onMaxRowsReached,
 }: Props) => {
   const rowWidth = useSetting(AppSetting.ROW_WIDTH);
   const showGutters = useSetting(AppSetting.SHOW_GUTTERS);
+  const fontSize = useSetting(AppSetting.FONT_SIZE);
   const charWidth = useCharWidth();
-  const [canvasXOffset, setCanvasXOffset] = useState(0);
+  const [calculatedHeight, setHeight] = useState(500);
+  const width = useCanvasWidth();
+  const yOffset = calculatedHeight - fontSize * rows.length;
+
+  useEffect(() => {
+    if (yOffset <= fontSize) {
+      onMaxRowsReached();
+    }
+  }, [fontSize, onMaxRowsReached, yOffset]);
 
   const gesture = useMemo(() => {
     const gestures: GestureType[] = [];
@@ -61,8 +75,8 @@ const Grid = ({
     }
 
     const convertCanvasCoordToGrid = (x: number, y: number) => {
-      const col = Math.floor((x - canvasXOffset) / charWidth) - 1;
-      const row = Math.floor(y / FONT_SIZE);
+      const col = Math.floor(x / charWidth) - 1;
+      const row = Math.floor((y - yOffset) / fontSize);
       return { row, col };
     };
 
@@ -96,35 +110,37 @@ const Grid = ({
 
     return Gesture.Exclusive(...gestures);
   }, [
-    canvasXOffset,
     charWidth,
+    fontSize,
     onFlingHorizontal,
     onFlingVertical,
     onPan,
     onPanEnd,
     onTap,
+    yOffset,
   ]);
 
-  const [calculatedHeight, setHeight] = useState(500);
-  const width = useCanvasWidth();
+  const useSkia = useSetting(AppSetting.SKIA_ENABLED);
+  const GridElement = useSkia ? RotatableGrid : RotatableGridSvg;
 
   return (
     <GestureDetector gesture={gesture}>
       <View
         row
         center
-        flex={flex}
         style={{ height, width }}
         onLayout={({ nativeEvent: { layout } }) => setHeight(layout.height)}
       >
-        <RotatableGrid
+        <GridElement
           rotation={rotation}
           rows={rows}
           height={height ?? calculatedHeight}
           rowWidth={rowWidth}
           highlights={matchedWord}
-          onViewXOffset={setCanvasXOffset}
+          yOffset={yOffset}
           showGutters={showGutters}
+          charDestinations={charDestinations}
+          showGridLines={showGridLines}
         />
       </View>
     </GestureDetector>

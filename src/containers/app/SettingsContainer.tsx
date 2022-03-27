@@ -102,13 +102,25 @@ const SettingsContainer = () => {
       AppSetting.AUTOMATIC_WORD_FIND,
       IconsOutlined.search,
       'Detect Words',
-      'Automatically searches for words horizontally and vertically after each drop'
+      'Automatically search for words horizontally and vertically after each drop'
     ),
     makeBoolean(
       AppSetting.ALLOW_DIAGONAL,
       IconsOutlined.expand,
       'Allow Diagonal',
       'Allow connecting characters diagonally'
+    ),
+    makeBoolean(
+      AppSetting.VERTICAL_GRID_LINES,
+      IconsOutlined.options,
+      'Show Gridlines',
+      'Show vertical grid lines'
+    ),
+    makeBoolean(
+      AppSetting.ANIMATIONS_ENABLED,
+      IconsOutlined.activity,
+      'Animations',
+      'Do you like things to move around?'
     ),
     makeSelect(
       AppSetting.ROW_WIDTH,
@@ -134,8 +146,20 @@ const SettingsContainer = () => {
         { label: 'Hard', value: 1 },
       ],
       IconsOutlined.barChart,
-      'Difficulty',
-      'How closely should characters match their real world frequency'
+      'Letter Difficulty',
+      'How closely characters match their real world frequency'
+    ),
+    makeSelect(
+      AppSetting.FONT_SIZE,
+      [
+        { label: 'Smaller', value: 32 },
+        { label: 'Larger', value: 42 },
+      ],
+      IconsOutlined.text,
+      'Font Size',
+      undefined,
+      false,
+      true
     ),
     makeSelect(
       AppSetting.MIN_WORD_LETTER_COUNT,
@@ -144,7 +168,7 @@ const SettingsContainer = () => {
         { label: '4', value: 4 },
         { label: '5', value: 5 },
       ],
-      IconsOutlined.text,
+      IconsOutlined.book,
       'Word Character Count',
       'Valid words must be at least this many letters'
     ),
@@ -174,6 +198,12 @@ const SettingsContainer = () => {
       IconsOutlined.trash2,
       'Reset App',
       'Seeing something buggy? Want a fresh start?'
+    ),
+    makeBoolean(
+      AppSetting.SKIA_ENABLED,
+      IconsOutlined.bulb,
+      'Beta Renderer',
+      "Do you like to use things before they're tried and true?"
     ),
   ];
 

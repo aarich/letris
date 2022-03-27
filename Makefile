@@ -12,17 +12,25 @@ build-prep:
 	@echo "Updating app.json"
 	node scripts/updateConfig.js $(RELEASE_NUM) $(DEST)
 
+build-finish:
+	@echo "Resetting app.json"
+	node scripts/resetConfig.js
+
 build-ios:
 	$(MAKE) build-prep DEST=IOS
 	-eas build -p ios --profile production --auto-submit --non-interactive --no-wait
+	$(MAKE) build-finish
 
 build-android:
 	$(MAKE) build-prep DEST=ANDROID
 	-eas build -p android --profile production --auto-submit --non-interactive --no-wait
+	$(MAKE) build-finish
 
 build-all:
 	$(MAKE) build-prep DEST=ALL
 	-eas build -p all --profile production --auto-submit --non-interactive --no-wait
-
+	$(MAKE) build-finish
+	
 publish: build-prep
 	expo publish --release-channel $(CHANNEL)
+	$(MAKE) build-finish

@@ -13,15 +13,21 @@ export enum AppSetting {
   AUTOMATIC_WORD_FIND = 'AUTOMATIC_WORD_FIND',
   SHOW_GUTTERS = 'SHOW_GUTTERS',
   ALLOW_DIAGONAL = 'ALLOW_DIAGONAL',
+  VERTICAL_GRID_LINES = 'VERTICAL_GRID_LINES',
+  ANIMATIONS_ENABLED = 'ANIMATIONS_ENABLED',
+  FONT_SIZE = 'FONT_SIZE',
+  SKIA_ENABLED = 'SKIA_ENABLED',
 }
 
 export enum GameStat {
-  GAMES_PLAYED = 'GAMES_PLAYED',
   HIGH_SCORE = 'HIGH_SCORE',
   HIGH_TURNS = 'HIGH_TURNS',
-  AVERAGE_TURNS = 'AVERAGE_TURNS',
   LONGEST_WORD = 'LONGEST_WORD',
-  WORDS_FOUND = 'WORDS_FOUND',
+  HIGHEST_SCORING_WORD = 'HIGHEST_SCORING_WORD',
+  TOTAL_WORDS = 'TOTAL_WORDS',
+  TOTAL_TURNS = 'TOTAL_TURNS',
+  TOTAL_SCORE = 'TOTAL_SCORE',
+  TOTAL_GAMES = 'TOTAL_GAMES',
 }
 
 export type MyAlertButton = AlertButton & { icon?: IconType };
@@ -29,3 +35,5 @@ export type MyAlertButton = AlertButton & { icon?: IconType };
 export type UpdateState<T> = Dispatch<SetStateAction<T>>;
 
 export const FYI_SETTINGS: AppSetting[] = [];
+
+export type CharDesinations = (number | undefined)[][];

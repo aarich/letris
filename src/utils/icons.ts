@@ -340,6 +340,7 @@ export const Icons = nicer({
   globe: 'globe',
   download: 'download',
   trash2: 'trash-2',
+  options: 'options',
 });
 
 export const IconsOutlined = Object.keys(Icons)

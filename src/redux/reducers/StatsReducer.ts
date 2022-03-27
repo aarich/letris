@@ -1,32 +1,30 @@
+import { produce } from 'immer';
 import { AnyAction } from 'redux';
 import { GameStat } from '../../utils';
-import { reset, setGameStat } from '../actions';
+import { newGame, reset, setGameStat } from '../actions';
 
 export type StatsState = {
-  [GameStat.GAMES_PLAYED]?: number;
+  [GameStat.TOTAL_GAMES]?: number;
   [GameStat.HIGH_SCORE]?: number;
   [GameStat.HIGH_TURNS]?: number;
-  [GameStat.AVERAGE_TURNS]?: number;
-  [GameStat.WORDS_FOUND]?: number;
+  [GameStat.TOTAL_TURNS]?: number;
+  [GameStat.TOTAL_SCORE]?: number;
+  [GameStat.TOTAL_WORDS]?: number;
   [GameStat.LONGEST_WORD]?: string;
+  [GameStat.HIGHEST_SCORING_WORD]?: string;
 };
 
-const initialState: StatsState = {
-  [GameStat.GAMES_PLAYED]: 0,
-  [GameStat.HIGH_SCORE]: 0,
-  [GameStat.HIGH_TURNS]: 0,
-  [GameStat.AVERAGE_TURNS]: 0,
-  [GameStat.WORDS_FOUND]: 0,
-  [GameStat.LONGEST_WORD]: '',
-};
+const initialState: StatsState = {};
 
-const StatsReducer = (state = initialState, action: AnyAction): StatsState => {
-  if (setGameStat.match(action)) {
-    return { ...state, ...action.payload };
-  } else if (reset.match(action)) {
-    return initialState;
-  }
-  return state;
-};
+const StatsReducer = (state = initialState, action: AnyAction): StatsState =>
+  produce(state, (draft) => {
+    if (setGameStat.match(action)) {
+      return { ...draft, ...action.payload };
+    } else if (newGame.match(action)) {
+      draft[GameStat.TOTAL_GAMES] = (draft[GameStat.TOTAL_GAMES] ?? 0) + 1;
+    } else if (reset.match(action)) {
+      return initialState;
+    }
+  });
 
 export default StatsReducer;
