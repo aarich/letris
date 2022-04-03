@@ -28,8 +28,8 @@ const elements = [
   )),
   p(
     a(
-      'https://github.com/aarich/letris/blob/master/package.json',
-      'And many more...',
+      `${MyConstants.githubUrl}/blob/master/package.json`,
+      'And many more... ',
       { showIcon: true }
     )
   ),
@@ -42,7 +42,7 @@ const elements = [
   p(),
   p(
     `Want to see your name here? ${MyConstants.manifest?.name} is open source! `,
-    a('github.com/aarich/letris', 'Check it out on GitHub'),
+    a(MyConstants.githubUrl, 'Check it out on GitHub'),
     ' and, if you like, make an improvement.'
   ),
   p(),

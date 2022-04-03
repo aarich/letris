@@ -11,11 +11,11 @@ build-prep:
 
 	@echo "Updating app.json"
 	node scripts/updateConfig.js $(RELEASE_NUM) $(DEST)
-	npx prettier --write app.json
 
 build-finish:
 	@echo "Resetting app.json"
 	node scripts/resetConfig.js
+	npx prettier --write app.json
 
 build-ios:
 	$(MAKE) build-prep DEST=IOS

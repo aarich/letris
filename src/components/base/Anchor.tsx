@@ -39,7 +39,7 @@ const Anchor = ({
       <>
         {showIcon ? (
           <>
-            {' '}
+            {'    '}
             <Icon
               name={Icons.externalLink}
               width={iconSize}

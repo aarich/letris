@@ -6,15 +6,19 @@ import Settings, {
 } from '../../components/app/Settings';
 import { PickerOption } from '../../components/base';
 import { reset, resetGame, setAppSetting } from '../../redux/actions';
-import { SettingsState } from '../../redux/reducers/SettingsReducer';
 import { useRows, useSettings } from '../../redux/selectors';
 import { useAppDispatch } from '../../redux/store';
 import {
   alert,
   AppSetting,
+  EASY_GAME_SETTINGS,
   FontSize,
+  HARD_GAME_SETTING,
   IconsOutlined,
   IconType,
+  LetterEasiness,
+  MEDIUM_GAME_SETTINGS,
+  SettingsState,
 } from '../../utils';
 
 const numberOpts = <T extends number>(...arr: T[]): PickerOption<T>[] =>
@@ -39,11 +43,7 @@ const makeButton = (
 
 const makeHeader = (title: string): HeaderProp => ({ title, type: 'header' });
 
-type Props = {
-  onPopToTop: VoidFunction;
-};
-
-const SettingsContainer = ({ onPopToTop }: Props) => {
+const SettingsContainer = () => {
   const settings = useSettings();
   const dispatch = useAppDispatch();
   const isStarted = useRows().length > 0;
@@ -64,7 +64,6 @@ const SettingsContainer = ({ onPopToTop }: Props) => {
           onPress: () => {
             dispatch(setAppSetting(setting));
             dispatch(resetGame());
-            onPopToTop();
           },
         },
       ]);
@@ -75,37 +74,11 @@ const SettingsContainer = ({ onPopToTop }: Props) => {
 
   const makeDifficultyOptions = () => {
     const onPressDifficulty = (difficulty: number) => () => {
-      const settingsToUpdate = (
-        [
-          {
-            [AppSetting.AUTOMATIC_WORD_FIND]: true,
-            [AppSetting.ALLOW_DIAGONAL]: true,
-            [AppSetting.ROW_WIDTH]: 9,
-            [AppSetting.NEW_CHAR_COUNT]: 2,
-            [AppSetting.LETTER_EASINESS]: 0,
-            [AppSetting.MIN_WORD_LETTER_COUNT]: 3,
-            [AppSetting.NUM_ROWS]: 12,
-          },
-          {
-            [AppSetting.AUTOMATIC_WORD_FIND]: false,
-            [AppSetting.ALLOW_DIAGONAL]: true,
-            [AppSetting.ROW_WIDTH]: 7,
-            [AppSetting.NEW_CHAR_COUNT]: 3,
-            [AppSetting.LETTER_EASINESS]: 0.5,
-            [AppSetting.MIN_WORD_LETTER_COUNT]: 4,
-            [AppSetting.NUM_ROWS]: 9,
-          },
-          {
-            [AppSetting.AUTOMATIC_WORD_FIND]: false,
-            [AppSetting.ALLOW_DIAGONAL]: false,
-            [AppSetting.ROW_WIDTH]: 5,
-            [AppSetting.NEW_CHAR_COUNT]: 4,
-            [AppSetting.LETTER_EASINESS]: 1,
-            [AppSetting.MIN_WORD_LETTER_COUNT]: 4,
-            [AppSetting.NUM_ROWS]: 6,
-          },
-        ] as const
-      )[difficulty];
+      const settingsToUpdate = [
+        EASY_GAME_SETTINGS,
+        MEDIUM_GAME_SETTINGS,
+        HARD_GAME_SETTING,
+      ][difficulty];
 
       saveChange(settingsToUpdate, true);
     };
@@ -237,9 +210,9 @@ const SettingsContainer = ({ onPopToTop }: Props) => {
   const letterEasiness = makeSelect(
     AppSetting.LETTER_EASINESS,
     [
-      { label: 'Easy', value: 0 },
-      { label: 'Medium', value: 0.5 },
-      { label: 'Hard', value: 1 },
+      { label: 'Easy', value: LetterEasiness.Easy },
+      { label: 'Medium', value: LetterEasiness.Medium },
+      { label: 'Hard', value: LetterEasiness.Hard },
     ],
     IconsOutlined.barChart,
     'Letter Difficulty',

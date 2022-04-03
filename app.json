@@ -8,7 +8,7 @@
     "scheme": "letris",
     "userInterfaceStyle": "automatic",
     "backgroundColor": "#222B45",
-    "platforms": ["android", "ios", "web"],
+    "platforms": ["android", "ios"],
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -20,10 +20,10 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "6",
+      "buildNumber": "8",
       "supportsTablet": true,
       "bundleIdentifier": "com.mrarich.letris",
-      "appStoreUrl": "https://apps.apple.com/app/apple-store/id1612680145?pt=117925864&ct=aj&mt=8",
+      "appStoreUrl": "https://apps.apple.com/app/apple-store/id1615329180?pt=117925864&ct=aj&mt=8",
       "config": {
         "usesNonExemptEncryption": false
       }
@@ -34,11 +34,7 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#222B45"
       },
-      "permissions": [
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "QUERY_ALL_PACKAGES"
-      ],
+      "permissions": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
       "package": "rich.alex.letris",
       "versionCode": 1
     },

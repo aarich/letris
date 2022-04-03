@@ -18,12 +18,16 @@ const PlayContainer = ({ navigation }: Props) => {
         'Instructions',
         'Choose a spot to drop the characters into the game below. ' +
           'Tap to rotate, swipe left and right to adjust the drop zone. ' +
-          'Swipe down to drop. You can also shift and rotate the incoming characters by swiping and tapping the space below the game grid.\n\nTry to make words out of the grid ' +
-          'below. Swipe left and right to shift the characters around.\n\n' +
+          'Swipe down to drop. You can also shift and rotate the incoming characters by swiping and tapping the space below the game grid.\n\n' +
+          'Try to make words out of the grid. Swipe left and right to shift the characters around.\n\n' +
           'To highlight a word, tap a character, then tap or swipe through the remaining characters of the word. ' +
           '',
         [
-          { text: 'Full Instructions', onPress: () => navigation.push('Help') },
+          {
+            text: 'Full Instructions',
+            onPress: () => navigation.replace('Help'),
+          },
+
           {
             text: 'Reset Game',
             onPress: () => dispatch(resetGame()),
@@ -38,7 +42,14 @@ const PlayContainer = ({ navigation }: Props) => {
   const incomingRef = useRef<IncomingContainerRef>(null);
   const [matchedWord, selectChar] = useMatchedWordReducer();
   const onGoBack = useCallback(() => navigation.pop(), [navigation]);
-  const onGoToStats = useCallback(() => navigation.push('Stats'), [navigation]);
+  const onGoToStats = useCallback(
+    () => navigation.replace('Stats'),
+    [navigation]
+  );
+  const onGoToSettings = useCallback(
+    () => navigation.replace('Settings'),
+    [navigation]
+  );
 
   return (
     <Layout flex>
@@ -56,6 +67,7 @@ const PlayContainer = ({ navigation }: Props) => {
         onRotateIncoming={() => incomingRef.current?.rotate()}
         onGoBack={onGoBack}
         onPressHelp={onPressHelp}
+        onGoToSettings={onGoToSettings}
       />
     </Layout>
   );

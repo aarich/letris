@@ -10,6 +10,12 @@ export enum Direction {
 }
 
 export type MinLength = 3 | 4 | 5;
+export type NewCharCount = 2 | 3 | 4;
+export enum LetterEasiness {
+  Easy = 0,
+  Medium = 0.5,
+  Hard = 1,
+}
 
 export type Incoming = {
   chars: string;

@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { AlertButton } from 'react-native';
 import { IconType } from '../icons';
+import { LetterEasiness, MinLength, NewCharCount } from './game';
 
 export type ValueOf<T> = T[keyof T];
 
@@ -43,3 +44,19 @@ export enum FontSize {
   Small = 'Small',
   Large = 'Large',
 }
+
+export type SettingsState = {
+  [AppSetting.HAS_REQUESTED_REVIEW]: boolean;
+  [AppSetting.AUTOMATIC_WORD_FIND]: boolean;
+  [AppSetting.SHOW_GUTTERS]: boolean;
+  [AppSetting.ALLOW_DIAGONAL]: boolean;
+  [AppSetting.VERTICAL_GRID_LINES]: boolean;
+  [AppSetting.ANIMATIONS_ENABLED]: boolean;
+  [AppSetting.NEW_CHAR_COUNT]: NewCharCount;
+  [AppSetting.ROW_WIDTH]: number;
+  [AppSetting.LETTER_EASINESS]: LetterEasiness;
+  [AppSetting.FONT_SIZE]: FontSize;
+  [AppSetting.MIN_WORD_LETTER_COUNT]: MinLength;
+  [AppSetting.SKIA_ENABLED]: boolean;
+  [AppSetting.NUM_ROWS]: number;
+};

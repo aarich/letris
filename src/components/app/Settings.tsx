@@ -127,6 +127,7 @@ const Settings = ({ settings }: Props) => {
   };
   return (
     <List
+      showsVerticalScrollIndicator={false}
       data={settings}
       contentContainerStyle={{ paddingBottom }}
       keyExtractor={(item) => (typeof item === 'string' ? item : item.title)}

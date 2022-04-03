@@ -16,6 +16,7 @@ export * from './language';
 export * from './log';
 export * from './misc';
 export * from './mockdata';
+export * from './settings';
 export * from './string';
 export * from './style';
 export * from './types';

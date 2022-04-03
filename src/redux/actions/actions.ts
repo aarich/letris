@@ -1,7 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
-import { Game, GameRow, Incoming } from '../../utils';
+import { Game, GameRow, Incoming, SettingsState } from '../../utils';
 import { AnimationState } from '../reducers/AnimationReducer';
-import { SettingsState } from '../reducers/SettingsReducer';
 import { StatsState } from '../reducers/StatsReducer';
 
 // App

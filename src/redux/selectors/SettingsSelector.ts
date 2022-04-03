@@ -1,5 +1,4 @@
-import { AppSetting } from '../../utils';
-import { SettingsState } from '../reducers/SettingsReducer';
+import { AppSetting, SettingsState } from '../../utils';
 import { useAppSelector } from '../store';
 
 export const useSettings = (): SettingsState =>

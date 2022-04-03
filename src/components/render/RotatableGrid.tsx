@@ -284,7 +284,7 @@ const RotatableGrid = ({
         }
       >
         {showGridLines
-          ? new Array(rowWidth + 2)
+          ? new Array(rowWidth + 1)
               .fill(null)
               .map((_, i) => i)
               .filter((i) => i && i % 2 === 0)

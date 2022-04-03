@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import Status from '../../components/play/Status';
 import { useSetting } from '../../redux/selectors';
-import { alert, AppSetting } from '../../utils';
+import { alert, AppSetting, LetterEasiness } from '../../utils';
 
 type Props = {
   currentWord: string | undefined;
@@ -10,6 +10,7 @@ type Props = {
   onRotateIncoming: VoidFunction | undefined;
   onGoBack: VoidFunction;
   onPressHelp: VoidFunction;
+  onGoToSettings: VoidFunction;
 };
 
 const StatusContainer = ({
@@ -19,6 +20,7 @@ const StatusContainer = ({
   onRotateIncoming,
   onGoBack,
   onPressHelp,
+  onGoToSettings,
 }: Props) => {
   const letterEasiness = useSetting(AppSetting.LETTER_EASINESS);
   const minWordLetterCount = useSetting(AppSetting.MIN_WORD_LETTER_COUNT);
@@ -26,20 +28,29 @@ const StatusContainer = ({
   const allowDiagonal = useSetting(AppSetting.ALLOW_DIAGONAL);
 
   const showSettings = useCallback(() => {
-    let letterDifficulty = 'easy';
-    if (letterEasiness === 0.5) {
-      letterDifficulty = 'medium';
-    } else if (letterEasiness === 1) {
-      letterDifficulty = 'hard';
-    }
-    const le = `Letter difficulty is ${letterDifficulty}.`;
-    const awf = `Automatic word detection is ${autoWordFind ? 'on' : 'off'}.`;
-    const mwlc = `Words must have at least ${minWordLetterCount} characters.`;
-    const ad = `Diagonal letters can${
-      allowDiagonal ? '' : 'not'
-    } be connected.`;
-    alert('Current Settings', `${le}\n${awf}\n${mwlc}\n${ad}`);
-  }, [allowDiagonal, autoWordFind, letterEasiness, minWordLetterCount]);
+    const le = {
+      [LetterEasiness.Easy]: 'easy',
+      [LetterEasiness.Medium]: 'medium',
+      [LetterEasiness.Hard]: 'hard',
+    }[letterEasiness];
+
+    let msg = `Letter difficulty is ${le}.\n`;
+    msg += `Automatic word detection is ${autoWordFind ? 'on' : 'off'}.\n`;
+    msg += `Words must have at least ${minWordLetterCount} characters.\n`;
+    msg += `Diagonal letters can${allowDiagonal ? '' : 'not'} be connected.`;
+    alert(
+      'Current Settings',
+      msg,
+      [{ text: 'Edit Settings', onPress: onGoToSettings }],
+      'Ok'
+    );
+  }, [
+    allowDiagonal,
+    autoWordFind,
+    letterEasiness,
+    minWordLetterCount,
+    onGoToSettings,
+  ]);
   return (
     <Status
       currentWord={currentWord}

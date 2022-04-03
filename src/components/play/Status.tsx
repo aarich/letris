@@ -53,7 +53,7 @@ const Status = ({
     <View row center flex>
       <Layout l2 style={[styles.layout, { paddingBottom }]}>
         <View row spread flex>
-          <View center>
+          <View style={styles.buttons}>
             <Button
               icon={{ name: IconsOutlined.arrowheadLeft }}
               ghost
@@ -78,7 +78,7 @@ const Status = ({
             </View>
           </GestureDetector>
 
-          <View center>
+          <View style={styles.buttons}>
             <Button
               ghost
               status="success"
@@ -103,4 +103,5 @@ export default Status;
 
 const styles = StyleSheet.create({
   layout: { flex: 1, justifyContent: 'space-between' },
+  buttons: { justifyContent: 'space-evenly' },
 });
