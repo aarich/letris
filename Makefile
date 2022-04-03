@@ -11,6 +11,7 @@ build-prep:
 
 	@echo "Updating app.json"
 	node scripts/updateConfig.js $(RELEASE_NUM) $(DEST)
+	npx prettier --write app.json
 
 build-finish:
 	@echo "Resetting app.json"

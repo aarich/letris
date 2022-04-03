@@ -8,11 +8,7 @@
     "scheme": "letris",
     "userInterfaceStyle": "automatic",
     "backgroundColor": "#222B45",
-    "platforms": [
-      "android",
-      "ios",
-      "web"
-    ],
+    "platforms": ["android", "ios", "web"],
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -22,9 +18,7 @@
       "fallbackToCacheTimeout": 5000,
       "enabled": true
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "buildNumber": "6",
       "supportsTablet": true,
@@ -48,19 +42,7 @@
       "package": "rich.alex.letris",
       "versionCode": 1
     },
-    "web": {
-      "favicon": "./assets/images/favicon.png",
-      "build": {
-        "babel": {
-          "include": [
-            "@ui-kitten/components"
-          ]
-        }
-      }
-    },
-    "plugins": [
-      "sentry-expo"
-    ],
+    "plugins": ["sentry-expo"],
     "hooks": {
       "postPublish": [
         {
