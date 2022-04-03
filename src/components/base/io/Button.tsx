@@ -10,7 +10,7 @@ type Props = {
   };
   outline?: boolean;
   ghost?: boolean;
-  label?: string;
+  label?: ButtonProps['children'];
 } & ButtonProps;
 
 const Button = ({

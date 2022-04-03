@@ -4,7 +4,6 @@ export * from './constants';
 export {
   addIncomingChars,
   CHAR_DROP_MS,
-  createNewIncoming,
   findWords,
   getNextDirection,
   getWordScore,

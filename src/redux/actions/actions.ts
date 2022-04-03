@@ -18,6 +18,7 @@ export const resetGameAction = createAction<Incoming>('Game/RESET');
 export const setGame = createAction<Game>('Game/SET');
 export const setRows = createAction<GameRow[]>('Game/SET_ROWS');
 export const setIncoming = createAction<Incoming>('Game/SET_INCOMING');
+export const setIncomingChars = createAction<string>('Game/SET_INCOMING_CHARS');
 export const rotateRows = createAction<boolean>('Game/ROTATE_ROWS');
 export const newGame = createAction('Game/NEW');
 

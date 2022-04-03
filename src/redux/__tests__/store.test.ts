@@ -8,6 +8,7 @@ const game: Game = {
   createdWords: [],
   incoming: { chars: 'AB', direction: Direction.RIGHT, position: 0 },
   turn: 0,
+  score: 0,
 };
 const settings = SettingsReducer(undefined, reset());
 

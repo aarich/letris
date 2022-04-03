@@ -1,10 +1,9 @@
 import {
   addIncomingChars,
   AppSetting,
-  CHAR_DROP_MS,
-  createNewIncoming,
   findWords,
   GameStat,
+  getRandomLetters,
   getWordScore,
   MatchedWord,
   removeBlankSpaces,
@@ -22,7 +21,10 @@ import {
   setRows,
 } from './actions';
 
-export const dropCharacters = (): AppThunk => async (dispatch, getState) => {
+/**
+ * @returns the function to call when characters are finished dropping
+ */
+const dropCharacters = (): AppThunk => async (dispatch, getState) => {
   const { game, settings } = getState();
 
   const rows = removeBlankSpaces(game.rows);
@@ -40,25 +42,33 @@ export const dropCharacters = (): AppThunk => async (dispatch, getState) => {
   if (changesExist) {
     const animate = settings[AppSetting.ANIMATIONS_ENABLED];
     if (animate) {
-      await new Promise<void>((resolve) => {
-        dispatch(setAnimation({ isDroppingChars: true }));
-        setTimeout(() => {
-          resolve();
-        }, CHAR_DROP_MS);
-      });
+      dispatch(setAnimation({ isDroppingChars: true }));
+      return;
+    }
+  }
+
+  return dispatch(finishedDroppingChars(changesExist));
+};
+
+export const finishedDroppingChars =
+  (changesExist = true): AppThunk =>
+  (dispatch, getState) => {
+    const { game, settings } = getState();
+
+    if (changesExist) {
+      const rows = removeBlankSpaces(game.rows);
+      dispatch(setRows(rows));
     }
 
-    // Animation completed, update the state
-    dispatch(setRows(rows));
-  }
+    dispatch(
+      setAnimation({ isDroppingChars: false, isDroppingIncoming: false })
+    );
 
-  dispatch(setAnimation({ isDroppingChars: false, isDroppingIncoming: false }));
-
-  if (settings[AppSetting.AUTOMATIC_WORD_FIND]) {
-    return dispatch(autoFindValidWords());
-  }
-  return Promise.resolve();
-};
+    if (settings[AppSetting.AUTOMATIC_WORD_FIND]) {
+      return dispatch(autoFindValidWords());
+    }
+    return Promise.resolve();
+  };
 
 export const handleSelectedWords =
   (words: MatchedWord[], isManual: boolean): AppThunk =>
@@ -172,7 +182,11 @@ export const advanceGame = (): AppThunk => async (dispatch, getState) => {
   // Get new incoming chars
   const letterEasiness = settings[AppSetting.LETTER_EASINESS];
   const newCharCount = settings[AppSetting.NEW_CHAR_COUNT];
-  const incoming = createNewIncoming(newCharCount, letterEasiness);
+  const incoming = {
+    chars: getRandomLetters(newCharCount, letterEasiness),
+    direction,
+    position,
+  };
 
   // Increment turn
   const turn = game.turn + 1;
@@ -182,21 +196,23 @@ export const advanceGame = (): AppThunk => async (dispatch, getState) => {
   const totalTurns = stats[GameStat.TOTAL_TURNS] ?? 0;
   dispatch(setGameStat({ [GameStat.TOTAL_TURNS]: totalTurns + 1 }));
 
+  dispatch(setAnimation({ isDroppingIncoming: true }));
   dispatch(setGame({ ...game, rows, incoming, turn }));
 
   // drop characters
-  dispatch(setAnimation({ isDroppingIncoming: true }));
-  return dispatch(dropCharacters()).finally(() =>
-    dispatch(setAnimation({ isDroppingIncoming: false }))
-  );
+  return dispatch(dropCharacters());
 };
 
 export const resetGame = (): AppThunk => (dispatch, getState) => {
-  const { settings } = getState();
+  const {
+    settings,
+    game: { incoming },
+  } = getState();
+
   const letterEasiness = settings[AppSetting.LETTER_EASINESS];
   const newCharCount = settings[AppSetting.NEW_CHAR_COUNT];
-  const incoming = createNewIncoming(newCharCount, letterEasiness);
+  const chars = getRandomLetters(newCharCount, letterEasiness);
 
-  dispatch(resetGameAction(incoming));
+  dispatch(resetGameAction({ ...incoming, chars }));
   return Promise.resolve();
 };

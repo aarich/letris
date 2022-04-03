@@ -41,12 +41,8 @@ const PlayContainer = ({ navigation }: Props) => {
   const onGoToStats = useCallback(() => navigation.push('Stats'), [navigation]);
 
   return (
-    <Layout flex style={{}}>
-      <IncomingContainer
-        ref={incomingRef}
-        onGoBack={onGoBack}
-        onPressHelp={onPressHelp}
-      />
+    <Layout flex>
+      <IncomingContainer ref={incomingRef} />
       <ActiveBoardContainer
         matchedWord={matchedWord}
         selectChar={selectChar}
@@ -58,6 +54,8 @@ const PlayContainer = ({ navigation }: Props) => {
         onShiftIncoming={(l) => incomingRef.current?.shift(l)}
         onAddIncoming={() => incomingRef.current?.add()}
         onRotateIncoming={() => incomingRef.current?.rotate()}
+        onGoBack={onGoBack}
+        onPressHelp={onPressHelp}
       />
     </Layout>
   );

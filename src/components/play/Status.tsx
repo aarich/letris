@@ -6,8 +6,8 @@ import {
   GestureDetector,
 } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useGame, useSetting } from '../../redux/selectors';
-import { AppSetting, IconsOutlined } from '../../utils';
+import { useGame } from '../../redux/selectors';
+import { IconsOutlined, toast } from '../../utils';
 import { Button, Layout, Text, View } from '../base';
 
 type Props = {
@@ -15,12 +15,23 @@ type Props = {
   onTap: VoidFunction | undefined;
   onShift: ((left: boolean) => void) | undefined;
   onFlingDown: VoidFunction | undefined;
+  onGoBack: VoidFunction;
+  onPressHelp: VoidFunction;
+  onPressSettings: VoidFunction;
 };
 
 const fling = (d: Directions, action: VoidFunction) =>
   Gesture.Fling().direction(d).onStart(action).runOnJS(true);
 
-const Status = ({ currentWord, onFlingDown, onShift, onTap }: Props) => {
+const Status = ({
+  currentWord,
+  onFlingDown,
+  onShift,
+  onTap,
+  onGoBack,
+  onPressHelp,
+  onPressSettings,
+}: Props) => {
   const paddingBottom = useSafeAreaInsets().bottom;
 
   const gesture = useMemo(() => {
@@ -36,27 +47,52 @@ const Status = ({ currentWord, onFlingDown, onShift, onTap }: Props) => {
     );
   }, [onFlingDown, onShift, onTap]);
 
-  const height = useSetting(AppSetting.FONT_SIZE) * 2;
-
   const { score } = useGame();
 
   return (
-    <View row center>
+    <View row center flex>
       <Layout l2 style={[styles.layout, { paddingBottom }]}>
-        <View row spread style={{ height }}>
-          <Button
-            icon={{ name: IconsOutlined.arrowheadLeft }}
-            ghost
-            status="basic"
-          />
+        <View row spread flex>
+          <View center>
+            <Button
+              icon={{ name: IconsOutlined.arrowheadLeft }}
+              ghost
+              status="basic"
+              onPress={onGoBack}
+            />
+            <Button
+              icon={{ name: IconsOutlined.settings }}
+              ghost
+              status="basic"
+              onPress={onPressSettings}
+            />
+          </View>
+
           <GestureDetector gesture={gesture}>
             <View center flex>
-              <Text category="h4" center>
-                {currentWord}
-              </Text>
+              <View flex center>
+                <Text category="h4" center>
+                  {currentWord}
+                </Text>
+              </View>
             </View>
           </GestureDetector>
-          <Button ghost status="success" label={`${score}`} />
+
+          <View center>
+            <Button
+              ghost
+              status="success"
+              label={`${score}`}
+              size="giant"
+              onPress={() => toast(`Score: ${score}`)}
+            />
+            <Button
+              icon={{ name: IconsOutlined.questionMarkCircle }}
+              ghost
+              status="basic"
+              onPress={onPressHelp}
+            />
+          </View>
         </View>
       </Layout>
     </View>

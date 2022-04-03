@@ -6,6 +6,7 @@ const game: Game = {
   incoming: { chars: 'AB', direction: Direction.LEFT, position: 3 },
   turn: 3,
   rotations: 0,
+  score: 3,
 };
 
 export const MOCK_DATA = {

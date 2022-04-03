@@ -9,7 +9,6 @@ import { Text } from './io';
 
 type Props = {
   icon?: IconType;
-  title: string;
   description?: string;
   badge?: ComponentPropsWithoutRef<typeof Badge>;
   chevronOverride?: IconType | boolean;
@@ -49,7 +48,12 @@ const ListItem = ({
     </View>
   );
 
-  const titleComp = <Text numberOfLines={titleNumberOfLines}>{title}</Text>;
+  const titleComp =
+    typeof title === 'string' ? (
+      <Text numberOfLines={titleNumberOfLines}>{title}</Text>
+    ) : (
+      title
+    );
 
   const descriptionComp = description ? (
     <Text s1 numberOfLines={descriptionNumberOfLines}>

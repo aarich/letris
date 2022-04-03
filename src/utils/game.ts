@@ -1,17 +1,12 @@
 import { vec, Vector } from '@shopify/react-native-skia';
 import { transpose } from './arrays';
-import { getLetterScore, getRandomLetters, getWordList } from './language';
+import { getLetterScore, getWordList } from './language';
 import { setCharAt } from './string';
-import {
-  Direction,
-  Incoming,
-  isVertical,
-  MatchedWord,
-  MinLength,
-} from './types';
+import { Direction, isVertical, MatchedWord, MinLength } from './types';
 
-export const CHAR_DROP_MS = 1000; //todo 600
+export const CHAR_DROP_MS = 600;
 export const WORD_MATCH_MS = 400;
+export const CHAR_ROTATE_MS = 100;
 
 const findWordsV = (
   rows: string[],
@@ -112,15 +107,6 @@ export const addIncomingChars = ({
   rows.unshift(...newRows);
   return rows;
 };
-
-export const createNewIncoming = (
-  charCount: number,
-  easiness: number
-): Incoming => ({
-  chars: getRandomLetters(charCount, easiness),
-  position: 0,
-  direction: Direction.RIGHT,
-});
 
 export const getNextDirection = (dir: Direction): Direction =>
   ({

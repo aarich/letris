@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Directions,
   Gesture,
@@ -7,7 +7,7 @@ import {
 import { Gesture as GestureType } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/gesture';
 import { useSetting } from '../../redux/selectors';
 import { AppSetting, CharDesinations, MatchedWord } from '../../utils';
-import { useCanvasWidth, useCharWidth } from '../../utils/hooks';
+import { useCanvasWidth, useCharWidth, useFontSize } from '../../utils/hooks';
 import { View } from '../base';
 import RotatableGrid from './RotatableGrid';
 import RotatableGridSvg from './RotatableGridSvg';
@@ -21,7 +21,6 @@ type Props = {
   onTap?: (row: number, col: number) => void;
   onPan?: (row: number, col: number) => void;
   onPanEnd?: VoidFunction;
-  onMaxRowsReached: VoidFunction;
   height?: number;
   charDestinations?: CharDesinations;
   showGridLines?: boolean;
@@ -42,21 +41,14 @@ const Grid = ({
   onTap,
   onPan,
   onPanEnd,
-  onMaxRowsReached,
 }: Props) => {
   const rowWidth = useSetting(AppSetting.ROW_WIDTH);
   const showGutters = useSetting(AppSetting.SHOW_GUTTERS);
-  const fontSize = useSetting(AppSetting.FONT_SIZE);
+  const fontSize = useFontSize();
   const charWidth = useCharWidth();
   const [calculatedHeight, setHeight] = useState(500);
   const width = useCanvasWidth();
   const yOffset = calculatedHeight - fontSize * rows.length;
-
-  useEffect(() => {
-    if (yOffset <= fontSize) {
-      onMaxRowsReached();
-    }
-  }, [fontSize, onMaxRowsReached, yOffset]);
 
   const gesture = useMemo(() => {
     const gestures: GestureType[] = [];

@@ -7,7 +7,7 @@ import { Text } from './io';
 import Label from './io/Label';
 import View from './View';
 
-export type OutputTableData = {
+type OutputTableData = {
   value?: string | number;
   link?: boolean;
 } & ComponentPropsWithoutRef<typeof Label>;

@@ -8,6 +8,7 @@ import {
   rotateRows,
   setGame,
   setIncoming,
+  setIncomingChars,
   setRows,
 } from '../actions';
 
@@ -28,6 +29,8 @@ const GameReducer = (state = initialState, action: AnyAction): GameState =>
       draft.rows = action.payload;
     } else if (setIncoming.match(action)) {
       draft.incoming = action.payload;
+    } else if (setIncomingChars.match(action)) {
+      draft.incoming.chars = action.payload;
     } else if (setGame.match(action)) {
       return action.payload;
     } else if (rotateRows.match(action)) {

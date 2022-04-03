@@ -35,6 +35,11 @@ export const removeBlankSpaces = (rows: string[]): string[] => {
     }
   }
 
+  // Remove blank spaces from the top
+  while (ret.length && !ret[0].trim()) {
+    ret.shift();
+  }
+
   return ret;
 };
 

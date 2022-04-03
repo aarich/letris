@@ -17,6 +17,7 @@ export enum AppSetting {
   ANIMATIONS_ENABLED = 'ANIMATIONS_ENABLED',
   FONT_SIZE = 'FONT_SIZE',
   SKIA_ENABLED = 'SKIA_ENABLED',
+  NUM_ROWS = 'NUM_ROWS',
 }
 
 export enum GameStat {
@@ -37,3 +38,8 @@ export type UpdateState<T> = Dispatch<SetStateAction<T>>;
 export const FYI_SETTINGS: AppSetting[] = [];
 
 export type CharDesinations = (number | undefined)[][];
+
+export enum FontSize {
+  Small = 'Small',
+  Large = 'Large',
+}

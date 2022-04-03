@@ -12,6 +12,7 @@ import {
   ListItem,
   PickerOption,
   PickerProps,
+  Text,
   View,
 } from '../base';
 
@@ -19,7 +20,7 @@ type ListInfo = {
   icon: IconType;
   title: string;
   description?: string;
-  type: 'boolean' | 'select' | 'button';
+  type: 'boolean' | 'select' | 'button' | 'header';
 };
 
 export type BooleanSettingProp = {
@@ -43,8 +44,19 @@ export type ButtonProp = {
   type: 'button';
 } & ListInfo;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type SettingProp = BooleanSettingProp | SelectSettingProp<any> | ButtonProp;
+export type HeaderProp = {
+  title: string;
+  icon?: never;
+  description?: never;
+  type: 'header';
+};
+
+type SettingProp =
+  | BooleanSettingProp
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | SelectSettingProp<any>
+  | ButtonProp
+  | HeaderProp;
 
 type Props = {
   settings: SettingProp[];
@@ -57,6 +69,21 @@ const Settings = ({ settings }: Props) => {
     const { title, icon, description } = item;
     const props: ComponentProps<typeof ListItem> = { title, icon, description };
     switch (item.type) {
+      case 'header':
+        return (
+          <>
+            <ListItem
+              title={() => (
+                <Text category="h5" style={styles.header}>
+                  {item.title}
+                </Text>
+              )}
+              chevronOverride={false}
+              disabled
+            />
+            <Divider />
+          </>
+        );
       case 'boolean':
         props.accessoryRight = () => (
           <Toggle checked={item.state} onChange={item.onToggle} />
@@ -102,7 +129,7 @@ const Settings = ({ settings }: Props) => {
     <List
       data={settings}
       contentContainerStyle={{ paddingBottom }}
-      keyExtractor={(item) => item.title}
+      keyExtractor={(item) => (typeof item === 'string' ? item : item.title)}
       renderItem={({ item }) => renderItem(item)}
       ListFooterComponent={
         <Label
@@ -118,4 +145,7 @@ const Settings = ({ settings }: Props) => {
 
 export default Settings;
 
-const styles = StyleSheet.create({ difficulty: { padding: Spacings.s3 } });
+const styles = StyleSheet.create({
+  difficulty: { padding: Spacings.s3 },
+  header: { paddingHorizontal: Spacings.s2 },
+});

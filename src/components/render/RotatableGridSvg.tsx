@@ -17,6 +17,7 @@ import {
   useBackgroundColor,
   useCanvasWidth,
   useCharWidth,
+  useFontSize,
   useTextColor,
 } from '../../utils/hooks';
 import AnimatableSvg from './AnimatableSvg';
@@ -47,7 +48,7 @@ const RotatableGridSvg = ({
   yOffset,
 }: Props) => {
   const animate = useSetting(AppSetting.ANIMATIONS_ENABLED);
-  const fontSize = useSetting(AppSetting.FONT_SIZE);
+  const fontSize = useFontSize();
   const charWidth = useCharWidth();
   const width = useCanvasWidth();
   const textColor = useTextColor();
@@ -103,13 +104,11 @@ const RotatableGridSvg = ({
       const duration = 200;
 
       if (animate) {
-        xOffset.value = withTiming(newOffset, {
-          duration,
-          easing: Easing.elastic(0.9),
-        });
-        setTimeout(() => {
-          handleRotationComplete(rotation);
-        }, duration);
+        xOffset.value = withTiming(
+          newOffset,
+          { duration, easing: Easing.elastic(0.9) },
+          () => handleRotationComplete(rotation)
+        );
       } else {
         handleRotationComplete(rotation);
       }
