@@ -1,8 +1,13 @@
-import { AppSetting, SettingsState } from '../../utils';
+import { AppSetting, MOCK_DATA, MyConstants, SettingsState } from '../../utils';
 import { useAppSelector } from '../store';
 
-export const useSettings = (): SettingsState =>
-  useAppSelector((state) => state.settings);
+export const useSettings = (): SettingsState => {
+  const settings = useAppSelector((state) => state.settings);
+  if (MyConstants.isScreenshotting) {
+    return { ...settings, ...MOCK_DATA.settings };
+  }
+  return settings;
+};
 
 export const useSetting = <T extends AppSetting>(
   setting: T

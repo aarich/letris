@@ -18,3 +18,6 @@ AppMockup
 ios
 android
 scripts/keys.json
+*.mockup
+screenshots/8*
+screenshots/iPad*

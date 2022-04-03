@@ -4,7 +4,7 @@ import GameReducer from '../reducers/GameReducer';
 import SettingsReducer from '../reducers/SettingsReducer';
 import StatsReducer from '../reducers/StatsReducer';
 const game: Game = {
-  rows: ['IJKLMNOP', 'ABCDEFGH'],
+  rows: ['HIJKLMN', 'ABCDEFG'],
   rotations: 0,
   createdWords: [],
   incoming: { chars: 'AB', direction: Direction.RIGHT, position: 0 },
@@ -22,7 +22,7 @@ describe('reducer', () => {
     });
 
     test('left', () => {
-      const expected = { ...game, rotations: 7 };
+      const expected = { ...game, rotations: 6 };
       expect(GameReducer(game, rotateRows(true))).toEqual(expected);
     });
   });
@@ -48,7 +48,7 @@ describe('thunks', () => {
             createdWords: [],
             incoming: { chars: expect.anything(), direction: 3, position: 0 },
             rotations: 0,
-            rows: ['AB      ', 'IJKLMNOP', 'ABCDEFGH'],
+            rows: ['AB     ', 'HIJKLMN', 'ABCDEFG'],
             score: 0,
             turn: 1,
           },

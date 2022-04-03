@@ -9,7 +9,7 @@ const elements = [
     'The goal is to get as many points as possible before you run out of space. ' +
       'Earn points by creating words with adjacent letters.',
     'Drop a new set of characters into the board during each turn. ' +
-      'You can shift them left or ride (by swiping) or rotate them by 90° (by tapping). ' +
+      'You can shift them left or right (by swiping) or rotate them 90° (by tapping). ' +
       "When you're happy with where they will land, drop them into the board (by swiping down).",
     'To select a word, tap on a letter in the game board to start the word. It will turn yellow. ' +
       'Tap the remaining letters in the word, or drag your finger through them. ' +
