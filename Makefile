@@ -1,4 +1,4 @@
-RELEASE_NUM = 1-0
+RELEASE_NUM = 1-1
 CHANNEL = prod-$(RELEASE_NUM)
 DEST = NONE
 
@@ -16,6 +16,7 @@ build-finish:
 	@echo "Resetting app.json"
 	node scripts/resetConfig.js
 	npx prettier --write app.json
+	npx prettier --write eas.json
 
 build-ios:
 	$(MAKE) build-prep DEST=IOS

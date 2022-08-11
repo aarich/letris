@@ -1,4 +1,4 @@
-import { MEDIUM_GAME_SETTINGS } from '.';
+import { MEDIUM_GAME_SETTINGS } from './settings';
 import { AppSetting, Direction, Game } from './types';
 
 const settings = {

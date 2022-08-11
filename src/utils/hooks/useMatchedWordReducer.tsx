@@ -1,6 +1,7 @@
 import { vec } from '@shopify/react-native-skia';
 import { Dispatch, Reducer, useReducer } from 'react';
-import { GameRow, isNextTo, MatchedWord } from '..';
+import { isNextTo } from '../grid';
+import { GameRow, MatchedWord } from '../types';
 
 type WordReducer = Reducer<
   MatchedWord | undefined,

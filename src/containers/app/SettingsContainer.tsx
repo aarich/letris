@@ -185,12 +185,12 @@ const SettingsContainer = () => {
     'Allow Diagonal',
     'Allow connecting characters diagonally'
   );
-  // makeBoolean(
-  //   AppSetting.ANIMATIONS_ENABLED,
-  //   IconsOutlined.activity,
-  //   'Animations',
-  //   'Do you like things to move around?'
-  // ),
+  const animations = makeBoolean(
+    AppSetting.ANIMATIONS_ENABLED,
+    IconsOutlined.activity,
+    'Animations',
+    'Do you like things to move around?'
+  );
   const rowWidth = makeSelect(
     AppSetting.ROW_WIDTH,
     numberOpts(5, 6, 7, 8, 9, 10),
@@ -252,6 +252,7 @@ const SettingsContainer = () => {
     gutters,
     gridLines,
     fontSize,
+    animations,
 
     makeHeader('App'),
     startOver,

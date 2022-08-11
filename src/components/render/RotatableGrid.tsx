@@ -9,7 +9,6 @@ import {
   Rect,
   runTiming,
   SkiaReadonlyValue,
-  useCanvasRef,
   useDerivedValue,
   useValue,
   vec,
@@ -74,7 +73,6 @@ const RotatableGrid = ({
   /** the progress of the character drop animation */
   const droppingProgress = useValue(0);
   const dispatch = useAppDispatch();
-  const ref = useCanvasRef();
 
   useEffect(() => {
     if (charDestinations) {
@@ -212,13 +210,13 @@ const RotatableGrid = ({
       addChar(secondToLastCol, -1);
     });
 
-    ref.current?.forceUpdate();
     return ret;
   }, [
     charDestinations,
     charWidth,
     droppingProgress,
     font,
+    fontCharWidth,
     fontSize,
     getXPosition,
     prevRotation,
@@ -256,7 +254,7 @@ const RotatableGrid = ({
   const gutterOpacity = showGutters ? 0.15 : 0;
 
   return (
-    <Canvas style={{ width, height }} ref={ref}>
+    <Canvas style={{ width, height }}>
       <Mask
         mask={
           <Group>
