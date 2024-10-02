@@ -38,18 +38,6 @@
       "package": "rich.alex.letris",
       "versionCode": 1
     },
-    "plugins": ["sentry-expo"],
-    "hooks": {
-      "postPublish": [
-        {
-          "file": "sentry-expo/upload-sourcemaps",
-          "config": {
-            "organization": "alex-rich",
-            "project": "predictions",
-            "authToken": "SENTRY_AUTH_TOKEN"
-          }
-        }
-      ]
-    }
+    "plugins": ["expo-asset", "expo-font"]
   }
 }

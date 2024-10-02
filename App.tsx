@@ -6,15 +6,12 @@ import {
 } from '@expo-google-fonts/roboto-mono';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
-import AppLoading from 'expo-app-loading';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-gesture-handler';
 import 'react-native-get-random-values';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import * as Sentry from 'sentry-expo';
 import theme from './assets/theme.json';
 import mapping from './src/components/base/mapping.json';
 import Navigation from './src/navigation';
@@ -23,16 +20,13 @@ import { useIsDark } from './src/utils/hooks';
 import AlertProvider from './src/utils/providers/AlertProvider';
 import PromptProvider from './src/utils/providers/PromptProvider';
 import ToastProvider from './src/utils/providers/ToastProvider';
-
-Sentry.init({
-  dsn: 'https://4f9bf513e433407aa0d017425f74f0b1@o583200.ingest.sentry.io/6273976',
-  enableInExpoDevelopment: false,
-  debug: __DEV__,
-  normalizeDepth: 5,
-});
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // @ts-expect-error partial mappings allowed
 const customMapping = mapping as CustomSchemaType;
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const isDark = useIsDark();
@@ -40,10 +34,11 @@ export default function App() {
     RobotoMono_400Regular,
   });
 
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
-
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -55,13 +50,15 @@ export default function App() {
           customMapping={customMapping}
         >
           <SafeAreaProvider>
-            <AlertProvider>
-              <PromptProvider>
-                <ToastProvider>
-                  <Navigation />
-                </ToastProvider>
-              </PromptProvider>
-            </AlertProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <AlertProvider>
+                <PromptProvider>
+                  <ToastProvider>
+                    <Navigation />
+                  </ToastProvider>
+                </PromptProvider>
+              </AlertProvider>
+            </GestureHandlerRootView>
           </SafeAreaProvider>
         </ApplicationProvider>
       </PersistGate>

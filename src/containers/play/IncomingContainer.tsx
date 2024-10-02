@@ -37,7 +37,7 @@ const IncomingContainer = forwardRef<IncomingContainerRef>((_, ref) => {
   }, [chars, direction, hideChars, newCharCount, rowWidth]);
 
   const onShift = useCallback(
-    (left) => {
+    (left: boolean) => {
       const newPosition = incoming.position + (left ? -1 : 1);
       const position = (rowWidth + newPosition) % rowWidth;
       dispatch(setIncoming({ ...incoming, position }));
@@ -46,7 +46,7 @@ const IncomingContainer = forwardRef<IncomingContainerRef>((_, ref) => {
   );
 
   const onFlingVertical = useCallback(
-    (down) => down && dispatch(advanceGame()),
+    (down: boolean) => down && dispatch(advanceGame()),
     [dispatch]
   );
   const onRotate = useCallback(() => {

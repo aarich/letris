@@ -50,7 +50,7 @@ export default ({ setShareMessage }: Props) => {
   useEffect(
     () =>
       setShareMessage(
-        `Here's how I'm doing on ${MyConstants.manifest?.name}!\n\n` +
+        `Here's how I'm doing on ${MyConstants.expoConfig?.name}!\n\n` +
           (data.length
             ? data.map(({ label, value }) => `${label}: ${value}`).join('\n')
             : "I'm a novice.")

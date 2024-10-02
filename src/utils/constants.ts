@@ -7,7 +7,7 @@ const IS_SCREENSHOTTING = false;
 
 export const MyConstants = {
   isScreenshotting: __DEV__ && IS_SCREENSHOTTING,
-  version: `${Constants.manifest?.version} (${myVersion})`,
+  version: `${Constants.expoConfig?.version} (${myVersion})`,
   appStoreUrl:
     'https://apps.apple.com/app/apple-store/id1615329180?pt=117925864&ct=ac&mt=8',
   playStoreUrl:

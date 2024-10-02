@@ -36,7 +36,6 @@ export default () => {
         header: TopNavigation(topInsets),
         headerShown: false,
       }}
-      useLegacyImplementation
     >
       <Drawer.Screen name="HomeScreen" component={HomeScreen} />
     </Drawer.Navigator>

@@ -3,14 +3,13 @@
 const config = require('../app.json');
 const easConfig = require('../eas.json');
 const fs = require('fs');
-const keys = require('./keys.json');
 
 const appReleaseDashed = process.argv[2]; // app version, e.g. 3-0
 const appRelease = appReleaseDashed.replace('-', '.');
 const dest = process.argv[3]; // native build destination, e.g. ANDROID/IOS/ALL/NONE
 
 const { expo } = config;
-const { ios, android, hooks } = expo;
+const { ios, android } = expo;
 
 if (['ALL', 'IOS'].includes(dest)) {
   if (expo.version !== appRelease) {
@@ -30,9 +29,6 @@ if (['ALL', 'IOS'].includes(dest)) {
 expo.version = appRelease;
 
 easConfig.build.production.releaseChannel = 'prod-' + appReleaseDashed;
-
-// Update sentry token
-hooks.postPublish[0].config.authToken = keys.sentry_auth_token;
 
 // Update minor version
 fs.readFile('src/utils/constants.ts', 'utf-8', (err, data) => {

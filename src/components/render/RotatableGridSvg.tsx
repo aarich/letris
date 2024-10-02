@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Animated, {
   Easing,
   interpolate,
+  runOnJS,
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -107,7 +108,7 @@ const RotatableGridSvg = ({
         xOffset.value = withTiming(
           newOffset,
           { duration, easing: Easing.elastic(0.9) },
-          () => handleRotationComplete(rotation)
+          () => runOnJS(handleRotationComplete)(rotation)
         );
       } else {
         handleRotationComplete(rotation);

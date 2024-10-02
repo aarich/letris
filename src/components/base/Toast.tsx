@@ -1,6 +1,12 @@
 import { EvaStatus } from '@ui-kitten/components/devsupport';
-import { useEffect, useRef, useState } from 'react';
-import { Animated, Platform, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Card, Text } from './io';
 
@@ -12,23 +18,25 @@ type Props = {
 const Toast = ({ visible, status, message }: Props) => {
   const [animating, setAnimating] = useState(false);
 
-  const opacity = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+  const opacity = useSharedValue(0);
 
   useEffect(() => {
-    setAnimating(true);
     const toValue = visible ? 1 : 0;
-    Animated.timing(opacity, {
-      toValue,
-      duration: 300,
-      useNativeDriver: Platform.OS !== 'web',
-    }).start(() => setAnimating(false));
-  }, [opacity, visible]);
+    if (opacity.value != toValue) {
+      setAnimating(true);
+      opacity.value = withTiming(toValue, { duration: 300 }, () =>
+        runOnJS(setAnimating)(false)
+      );
+    }
+  }, [visible]);
 
   const bottom = Math.max(useSafeAreaInsets().bottom, 20) + 10;
 
+  const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+
   return visible || animating ? (
     <View style={[styles.view, { bottom }]}>
-      <Animated.View style={{ opacity }}>
+      <Animated.View style={animatedStyle}>
         <Card style={styles.card} status={status} padded>
           <Text style={styles.message} center>
             {message}

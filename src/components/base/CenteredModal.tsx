@@ -1,15 +1,21 @@
 import { Modal } from '@ui-kitten/components';
-import { FC, useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet } from 'react-native';
+import { FC, PropsWithChildren, useEffect } from 'react';
+import { StyleSheet } from 'react-native';
 import { useKeyboardSize } from '../../utils/hooks';
 import { Card, Text } from './io';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
-type Props = {
+type Props = PropsWithChildren<{
   title?: string;
   visible: boolean;
   onRequestClose: () => void;
   avoidKeyboard?: boolean;
-};
+}>;
 
 const CenteredModal: FC<Props> = ({
   visible,
@@ -19,18 +25,23 @@ const CenteredModal: FC<Props> = ({
   avoidKeyboard,
 }) => {
   const keyboardSize = useKeyboardSize();
-  const paddingBottom = useRef(new Animated.Value(0));
+  const paddingBottom = useSharedValue(0);
 
   useEffect(() => {
     if (avoidKeyboard) {
-      Animated.timing(paddingBottom.current, {
-        toValue: keyboardSize * 0.6,
-        duration: 200,
-        useNativeDriver: false,
-        easing: Easing.quad,
-      }).start();
+      const toValue = keyboardSize * 0.6;
+      if (toValue != paddingBottom.value) {
+        paddingBottom.value = withTiming(toValue, {
+          duration: 200,
+          easing: Easing.quad,
+        });
+      }
     }
   }, [avoidKeyboard, keyboardSize, paddingBottom]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    paddingBottom: paddingBottom.value,
+  }));
 
   return (
     <Modal
@@ -38,7 +49,7 @@ const CenteredModal: FC<Props> = ({
       onBackdropPress={onRequestClose}
       backdropStyle={styles.backdrop}
     >
-      <Animated.View style={{ paddingBottom: paddingBottom.current }}>
+      <Animated.View style={animatedStyle}>
         <Card style={styles.card} padded disabled>
           {title ? (
             <Text category="h5" center>

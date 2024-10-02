@@ -1,15 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { Action } from 'redux';
 import {
-  Action,
-  AnyAction,
-  applyMiddleware,
-  compose,
-  createStore,
-} from 'redux';
-import { persistReducer, persistStore } from 'redux-persist';
-import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist'
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import rootReducer from './reducers';
+import { configureStore } from '@reduxjs/toolkit';
 
 const persistConfig = {
   key: 'root',
@@ -18,18 +22,22 @@ const persistConfig = {
 
 // Store
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-// @ts-ignore
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-export const store = createStore(
-  persistedReducer,
-  {},
-  composeEnhancers(applyMiddleware(thunk))
-);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
+
 export const persistor = persistStore(store);
 
 // Types
 type RootState = ReturnType<typeof store.getState>;
-type AppDispatch = ThunkDispatch<RootState, never, AnyAction>;
+type AppDispatch = ThunkDispatch<RootState, never, Action>;
 export type AppThunk<ReturnType = void> = ThunkAction<
   Promise<ReturnType>,
   RootState,

@@ -90,7 +90,7 @@ const ActiveBoardContainer = ({
   );
 
   const onFling = useCallback(
-    (down) => down && dispatch(advanceGame()),
+    (down: boolean) => down && dispatch(advanceGame()),
     [dispatch]
   );
 

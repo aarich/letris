@@ -6,7 +6,6 @@ import {
   TopNavigation as UIKTopNavigation,
   TopNavigationAction,
 } from '@ui-kitten/components';
-import { RenderProp } from '@ui-kitten/components/devsupport';
 import { Fragment, ReactNode } from 'react';
 import { Icon, Text, View } from '../components/base';
 import { Icons } from '../utils';
@@ -19,7 +18,7 @@ export default <T extends NativeStackHeaderProps | DrawerHeaderProps>(
       return undefined;
     }
 
-    let BackAction: RenderProp = () => (
+    let BackAction = () => (
       <TopNavigationAction
         icon={(props) => <Icon {...props} name={Icons.menu} />}
         onPress={() => navigation.dispatch(DrawerActions.openDrawer())}

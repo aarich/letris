@@ -74,7 +74,7 @@ const Home = ({ onGoToPlay, onToggleDrawer }: Props) => {
       </View>
       <View flex center style={styles.container}>
         <Text h1 center style={styles.title}>
-          {MyConstants.manifest?.name}
+          {MyConstants.expoConfig?.name}
         </Text>
         <View style={styles.stats}>
           {renderWelcome()}

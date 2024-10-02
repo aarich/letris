@@ -2,7 +2,7 @@ import TextWall from '../../components/app/TextWall';
 import { h3, p } from '../../components/base/io/Text';
 import { MyConstants } from '../../utils';
 
-const appName = MyConstants.manifest?.name;
+const appName = MyConstants.expoConfig?.name;
 const elements = [
   h3(`How do I play ${appName}?`),
   p(

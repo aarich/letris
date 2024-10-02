@@ -4,7 +4,10 @@ import {
 } from '@react-navigation/drawer';
 import { memo } from 'react';
 import { StyleSheet } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DrawerContent } from '../../components/app/DrawerContent';
 
@@ -13,19 +16,20 @@ type Props = DrawerContentComponentProps;
 const DrawerContentContainer = (props: Props) => {
   const { navigation } = props;
 
-  const progress = useDrawerProgress() as Animated.Node<number>;
-
-  const translateX = Animated.interpolateNode(progress, {
-    inputRange: [0, 0.5, 0.7, 0.8, 1],
-    outputRange: [-100, -85, -70, -45, 0],
-  });
+  const progress = useDrawerProgress();
 
   const paddingTop = useSafeAreaInsets().top;
 
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateX: interpolate(progress.value, [0, 1], [-100, 0]),
+      },
+    ],
+  }));
+
   return (
-    <Animated.View
-      style={[styles.drawerContent, { transform: [{ translateX }] }]}
-    >
+    <Animated.View style={[animatedStyle, styles.drawerContent]}>
       <DrawerContent
         onGoToScreen={(screen) => navigation.navigate(screen)}
         onToggleDrawer={() => navigation.toggleDrawer()}

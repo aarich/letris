@@ -1,16 +1,11 @@
 import {
   Canvas,
-  Easing,
   Glyph,
   Glyphs,
   Group,
   interpolate,
   Mask,
   Rect,
-  runTiming,
-  SkiaReadonlyValue,
-  useDerivedValue,
-  useValue,
   vec,
 } from '@shopify/react-native-skia';
 import { useCallback, useEffect, useState } from 'react';
@@ -34,6 +29,14 @@ import {
   useTextColor,
 } from '../../utils/hooks';
 import { Text } from '../base';
+import {
+  DerivedValue,
+  Easing,
+  runOnJS,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 type Props = {
   rows: string[];
@@ -69,21 +72,21 @@ const RotatableGrid = ({
   const highlightColor = useTextColor('warning');
   const { isDroppingIncoming } = useAnimationState();
   const [prevRotation, setPrevRotation] = useState(rotation);
-  const xOffset = useValue(0);
+  const xOffset = useSharedValue(0);
   /** the progress of the character drop animation */
-  const droppingProgress = useValue(0);
+  const droppingProgress = useSharedValue(0);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    const dispatchFinished = () => dispatch(finishedDroppingChars());
     if (charDestinations) {
-      runTiming(
-        droppingProgress,
+      droppingProgress.value = withTiming(
         1,
         { duration: CHAR_DROP_MS, easing: Easing.ease },
-        () => dispatch(finishedDroppingChars())
+        () => runOnJS(dispatchFinished)()
       );
     } else {
-      droppingProgress.current = 0;
+      droppingProgress.value = 0;
     }
   }, [charDestinations, dispatch, droppingProgress]);
 
@@ -94,7 +97,7 @@ const RotatableGrid = ({
     }
 
     const handleRotationComplete = (r: number) => {
-      xOffset.current = 0;
+      xOffset.value = 0;
       setPrevRotation(r);
     };
 
@@ -108,30 +111,18 @@ const RotatableGrid = ({
     const newOffset = charWidth * (moveLeft ? -1 : 1);
 
     if (animate) {
-      const timing = runTiming(
-        xOffset,
+      xOffset.value = withTiming(
         newOffset,
         {
           duration: CHAR_ROTATE_MS,
           easing: Easing.elastic(0.9),
         },
-        () => handleRotationComplete(rotation)
+        () => runOnJS(handleRotationComplete)(rotation)
       );
-
-      return () => timing.cancel();
     } else {
       handleRotationComplete(rotation);
     }
   }, [animate, charWidth, prevRotation, rotation, rowWidth, xOffset]);
-
-  const getXPosition = useCallback(
-    (i: number, offset: number) => {
-      const positionInRow = 1 + ((i + prevRotation) % rowWidth);
-      const offsetInCol = (charWidth - fontCharWidth) / 2;
-      return positionInRow * charWidth + offset + offsetInCol;
-    },
-    [charWidth, fontCharWidth, prevRotation, rowWidth]
-  );
 
   // When dropping incoming characters, we want them to show up as coming from the top of the grid, not
   // just the top of the board.
@@ -140,7 +131,7 @@ const RotatableGrid = ({
     ? visibleRowsOnGrid - rows.length
     : 0;
 
-  const glyphs: SkiaReadonlyValue<Glyph[]> = useDerivedValue(() => {
+  const glyphs: DerivedValue<Glyph[]> = useDerivedValue(() => {
     if (!font) {
       return [];
     }
@@ -155,10 +146,16 @@ const RotatableGrid = ({
       }
 
       return interpolate(
-        droppingProgress.current,
+        droppingProgress.value,
         [0, 1],
         [startY - rowOffsetForDroppingChars, endY]
       );
+    };
+
+    const getXPosition = (i: number, offset: number) => {
+      const positionInRow = 1 + ((i + prevRotation) % rowWidth);
+      const offsetInCol = (charWidth - fontCharWidth) / 2;
+      return positionInRow * charWidth + offset + offsetInCol;
     };
 
     const getYPosition = (row: number, col: number): number => {
@@ -180,7 +177,7 @@ const RotatableGrid = ({
           ret.push({
             id,
             pos: vec(
-              getXPosition(i, xOffset.current),
+              getXPosition(i, xOffset.value),
               constantY ?? getYPosition(rowIndex, i)
             ),
           });
@@ -193,7 +190,7 @@ const RotatableGrid = ({
         ret.push({
           id: glyphIds[originalCol],
           pos: vec(
-            adjustedCol * charWidth + xOffset.current + offsetInCol,
+            adjustedCol * charWidth + xOffset.value + offsetInCol,
             getYPosition(rowIndex, originalCol)
           ),
         });
@@ -218,7 +215,6 @@ const RotatableGrid = ({
     font,
     fontCharWidth,
     fontSize,
-    getXPosition,
     prevRotation,
     rowOffsetForDroppingChars,
     rowWidth,
@@ -227,25 +223,31 @@ const RotatableGrid = ({
     yOffset,
   ]);
 
-  const highlighted: SkiaReadonlyValue<Glyph[]> = useDerivedValue(() => {
+  const highlighted: DerivedValue<Glyph[]> = useDerivedValue(() => {
     if (!font || !highlights) {
       return [];
     }
     const ret: Glyph[] = [];
     const { word, chars } = highlights;
 
+    const getXPosition = (i: number, offset: number) => {
+      const positionInRow = 1 + ((i + prevRotation) % rowWidth);
+      const offsetInCol = (charWidth - fontCharWidth) / 2;
+      return positionInRow * charWidth + offset + offsetInCol;
+    };
+
     font.getGlyphIDs(word).forEach((id, i) =>
       ret.push({
         id,
         pos: vec(
-          getXPosition(chars[i].x, xOffset.current),
+          getXPosition(chars[i].x, xOffset.value),
           fontSize * (chars[i].y + 1) + yOffset
         ),
       })
     );
 
     return ret;
-  }, [font, highlights, getXPosition, xOffset, fontSize, yOffset]);
+  }, [font, highlights, xOffset, fontSize, yOffset]);
 
   if (!font) {
     return <Text>Loading fonts...</Text>;

@@ -47,7 +47,7 @@ const matchedWordReducer: WordReducer = (s, a) => {
 
       // check if we need to start over or
       ret.word += charAtPos;
-      ret.chars.push(vec(col, row));
+      ret.chars = [...ret.chars, vec(col, row)];
       return ret;
     }
   }
@@ -60,7 +60,7 @@ export const useMatchedWordReducer = (): [
   Dispatch<
     | { row: number; col: number; rows: GameRow[]; allowDiagonal: boolean }
     | undefined
-  >
+  >,
 ] => {
   return useReducer(matchedWordReducer, undefined);
 };

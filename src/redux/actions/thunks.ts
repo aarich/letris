@@ -88,16 +88,14 @@ export const handleSelectedWords =
     // Validate words
     if (isManual) {
       validateWordSelection(words, minWordLength);
-      // success
+      // success toast
       toast(
         `${words[0].word} (+${getWordScore(words[0].word)})`,
         'success',
         1000
       );
-    }
-
-    // Show them on the screen
-    if (!isManual) {
+    } else {
+      // Show them on the screen
       await new Promise<void>((resolve) => {
         dispatch(setAnimation({ matchedWords: words }));
         setTimeout(() => {
@@ -153,7 +151,9 @@ export const autoFindValidWords = (): AppThunk => (dispatch, getState) => {
 
   // 1. Find valid words
   const newWords = findWords(rows, game.rotations, minLength);
-  dispatch(handleSelectedWords(newWords, false));
+  dispatch(handleSelectedWords(newWords, false)).then(() => {
+    newWords.length && dispatch(autoFindValidWords());
+  });
 
   // 4. Drop characters
   return Promise.resolve();

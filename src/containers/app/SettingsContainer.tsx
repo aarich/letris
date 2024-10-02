@@ -240,12 +240,12 @@ const SettingsContainer = () => {
   //   'Reset Walkthrough',
   //   'Reenable all those handy "FYI" tips'
   // ),
-  // makeBoolean(
+  // const skia = makeBoolean(
   //   AppSetting.SKIA_ENABLED,
   //   IconsOutlined.bulb,
   //   'Beta Renderer',
   //   "Do you like to use things before they're tried and true?"
-  // ),
+  // );
 
   const items = [
     makeHeader('Display'),
@@ -253,6 +253,7 @@ const SettingsContainer = () => {
     gridLines,
     fontSize,
     animations,
+    // skia,
 
     makeHeader('App'),
     startOver,
