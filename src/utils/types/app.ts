@@ -17,7 +17,6 @@ export enum AppSetting {
   VERTICAL_GRID_LINES = 'VERTICAL_GRID_LINES',
   ANIMATIONS_ENABLED = 'ANIMATIONS_ENABLED',
   FONT_SIZE = 'FONT_SIZE',
-  SKIA_ENABLED = 'SKIA_ENABLED',
   NUM_ROWS = 'NUM_ROWS',
 }
 
@@ -57,6 +56,5 @@ export type SettingsState = {
   [AppSetting.LETTER_EASINESS]: LetterEasiness;
   [AppSetting.FONT_SIZE]: FontSize;
   [AppSetting.MIN_WORD_LETTER_COUNT]: MinLength;
-  [AppSetting.SKIA_ENABLED]: boolean;
   [AppSetting.NUM_ROWS]: number;
 };

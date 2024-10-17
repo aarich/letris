@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 0.45.1"
+    "version": ">= 0.45.1",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -17,14 +18,12 @@
       }
     },
     "production": {
-      "releaseChannel": "prod-1-1"
+      "releaseChannel": "prod-2-0",
+      "autoIncrement": true
     }
   },
   "submit": {
     "production": {
-      "android": {
-        "serviceAccountKeyPath": "../intervals/pc-api-5006870031383457262-101-4afc423a918f.json"
-      },
       "ios": {
         "appleId": "arich@hmc.edu",
         "ascAppId": "1612680145",

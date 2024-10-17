@@ -9,7 +9,6 @@ const initialState: SettingsState = {
   [AppSetting.VERTICAL_GRID_LINES]: true,
   [AppSetting.SHOW_GUTTERS]: true,
   [AppSetting.FONT_SIZE]: FontSize.Small,
-  [AppSetting.SKIA_ENABLED]: true,
   ...MEDIUM_GAME_SETTINGS,
 };
 

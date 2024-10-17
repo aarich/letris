@@ -240,12 +240,6 @@ const SettingsContainer = () => {
   //   'Reset Walkthrough',
   //   'Reenable all those handy "FYI" tips'
   // ),
-  // const skia = makeBoolean(
-  //   AppSetting.SKIA_ENABLED,
-  //   IconsOutlined.bulb,
-  //   'Beta Renderer',
-  //   "Do you like to use things before they're tried and true?"
-  // );
 
   const items = [
     makeHeader('Display'),

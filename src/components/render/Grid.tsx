@@ -10,7 +10,6 @@ import { AppSetting, CharDesinations, MatchedWord } from '../../utils';
 import { useCanvasWidth, useCharWidth, useFontSize } from '../../utils/hooks';
 import { View } from '../base';
 import RotatableGrid from './RotatableGrid';
-import RotatableGridSvg from './RotatableGridSvg';
 
 type Props = {
   rows: string[];
@@ -112,9 +111,6 @@ const Grid = ({
     yOffset,
   ]);
 
-  const useSkia = useSetting(AppSetting.SKIA_ENABLED);
-  const GridElement = useSkia ? RotatableGrid : RotatableGridSvg;
-
   return (
     <GestureDetector gesture={gesture}>
       <View
@@ -123,7 +119,7 @@ const Grid = ({
         style={{ height, width }}
         onLayout={({ nativeEvent: { layout } }) => setHeight(layout.height)}
       >
-        <GridElement
+        <RotatableGrid
           rotation={rotation}
           rows={rows}
           height={height ?? calculatedHeight}

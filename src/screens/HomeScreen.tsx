@@ -5,8 +5,8 @@ import HomeContainer from '../containers/home/HomeContainer';
 import { DrawerParamList, RootStackScreenProps } from '../utils';
 
 type Props = CompositeScreenProps<
-  RootStackScreenProps<'Home'>,
-  DrawerScreenProps<DrawerParamList, never>
+  DrawerScreenProps<DrawerParamList, 'HomeScreen'>,
+  RootStackScreenProps<'Home'>
 >;
 
 const HomeScreen = ({ navigation }: Props) => {

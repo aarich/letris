@@ -1,14 +1,17 @@
 import {
+  BlurMask,
   Canvas,
   Glyph,
   Glyphs,
   Group,
   interpolate,
+  Line,
   Mask,
+  Points,
   Rect,
   vec,
 } from '@shopify/react-native-skia';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { finishedDroppingChars } from '../../redux/actions';
 import { useAnimationState, useSetting } from '../../redux/selectors';
 import { useAppDispatch } from '../../redux/store';
@@ -37,6 +40,7 @@ import {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { useTheme } from '@ui-kitten/components';
 
 type Props = {
   rows: string[];
@@ -69,6 +73,7 @@ const RotatableGrid = ({
   const font = useCanvasFont();
   const textColor = useTextColor();
   const gridColor = useBackgroundColor(2);
+  const lineColor = useTheme()['color-warning-800'];
   const highlightColor = useTextColor('warning');
   const { isDroppingIncoming } = useAnimationState();
   const [prevRotation, setPrevRotation] = useState(rotation);
@@ -255,6 +260,25 @@ const RotatableGrid = ({
 
   const gutterOpacity = showGutters ? 0.15 : 0;
 
+  const lines = [];
+
+  const getXPosition = (i: number) => {
+    const positionInRow = 1 + ((i + prevRotation) % rowWidth);
+    const offsetInCol = (charWidth - fontCharWidth) / 2;
+    return positionInRow * charWidth + offsetInCol + fontCharWidth / 2;
+  };
+
+  if (highlights?.chars) {
+    for (let i = 0; i < highlights.chars.length; i++) {
+      lines.push({
+        x1: getXPosition(highlights.chars[i].x),
+        // x2: getXPosition(highlights.chars[i + 1].x),
+        y1: fontSize * (highlights.chars[i].y + 1) + yOffset - fontSize / 2,
+        // y2: fontSize * (highlights.chars[i + 1].y + 1) + yOffset - fontSize / 2,
+      });
+    }
+  }
+
   return (
     <Canvas style={{ width, height }}>
       <Mask
@@ -301,6 +325,15 @@ const RotatableGrid = ({
                 />
               ))
           : undefined}
+        <Group color={lineColor}>
+          <Points
+            points={lines.map(({ x1, y1 }) => vec(x1, y1))}
+            strokeWidth={4}
+            style={'stroke'}
+            strokeJoin={'round'}
+            mode="polygon"
+          />
+        </Group>
         <Group color={textColor}>
           <Glyphs glyphs={glyphs} font={font} />
         </Group>

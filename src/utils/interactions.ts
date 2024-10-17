@@ -1,8 +1,8 @@
 import { EvaStatus } from '@ui-kitten/components/devsupport';
-import { openBrowserAsync } from 'expo-web-browser';
 import { AlertButton, Platform } from 'react-native';
 import { PickerOption } from '../components/base';
 import { log } from './log';
+import { openURL } from 'expo-linking';
 
 type PromptFn = (
   title: string,
@@ -84,12 +84,12 @@ export const handleError = (error: unknown) => {
 };
 
 export const TWITTER_PROFILE = 'mr_arich';
-const twitterProfileUrl = `https://twitter.com/${TWITTER_PROFILE}`;
+const twitterProfileUrl = `https://x.com/${TWITTER_PROFILE}`;
 
 export const openTwitter = () => {
   if (Platform.OS === 'web') {
     window.open(twitterProfileUrl, '_blank');
   } else {
-    openBrowserAsync(twitterProfileUrl);
+    openURL(twitterProfileUrl);
   }
 };
